@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Install packages
+    - name: Install
       run: yarn
     - name: Compile
       run: yarn run compile
-    - name: Compile
+    - name: Copy assets
       run: yarn run copy-web
+    - name: Pack 
+      run: yarn run pack
