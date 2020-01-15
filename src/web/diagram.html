@@ -1,0 +1,26 @@
+<html>
+  <header></header>
+  <body>
+    <div id="chart"></div>
+
+    <!-- SCRIPT PLACEHOLDER -->
+    <script>
+      mermaid.initialize({
+        startOnLoad: false
+      });
+      const chart = document.getElementById('chart');
+      window.addEventListener('message', receiveMessage, false);
+      function renderChart(svg) {
+        chart.innerHTML = svg;
+      }
+      function receiveMessage(e) {
+          const graphDefinition = 'graph TB\na-->b';
+          if(e.data.chart) {
+            console.log(e.data.chart);
+            mermaid.render('id1', e.data.chart, renderChart);
+          }
+
+      }
+    </script>
+  </body>
+</html>

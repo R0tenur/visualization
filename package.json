@@ -1,0 +1,51 @@
+{
+  "name": "vizualisation",
+  "displayName": "Vizualisation",
+  "description": "Vizualisation of databases",
+  "version": "0.0.1",
+  "publisher": "R0tenur",
+  "engines": {
+    "vscode": "^1.31.0",
+    "azdata": "*"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "dashboard.tabs": [
+      {
+        "id": "vizualisation-panel",
+        "title": "Vizualisation",
+        "description": "Vizualisation",
+        "container": {
+          "webview-container": "diagram-panel"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "yarn run copy-web && tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install && node ./node_modules/azdata/bin/install",
+    "test": "yarn run compile && node ./node_modules/vscode/bin/test",
+    "proposedapi": "node installTypings.js",
+    "copy-web": "cp -R ./src/web ./out"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^13.1.6",
+    "azdata": "1.0.0",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.4",
+    "vscode": "^1.1.36"
+  },
+  "dependencies": {
+    "@types/mssql": "^6.0.0",
+    "mssql": "^6.0.1"
+  }
+}
