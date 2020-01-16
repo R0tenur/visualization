@@ -2,8 +2,9 @@
   "name": "vizualisation",
   "displayName": "Vizualisation",
   "description": "Vizualisation of databases",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "R0tenur",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/R0tenur/visualization.git"
