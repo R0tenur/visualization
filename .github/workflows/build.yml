@@ -24,6 +24,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: https://github.com/R0tenur/visualization/releases/tag/v0.0.2
         asset_path: ./vizualisation-0.0.2.vsix
         asset_name: vizualisation-0.0.2.vsix
+        upload_url: https://github.com/R0tenur/visualization/releases/tag/v0.0.2
