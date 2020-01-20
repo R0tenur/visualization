@@ -17,14 +17,6 @@ jobs:
       run: yarn run copy-web
     - name: Pack 
       run: yarn run pack
-    - name: Create Release
-      id: create_release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        draft: false
-        prerelease: false
     - name: Upload to release
       uses: JasonEtco/upload-to-release@master
       with:
