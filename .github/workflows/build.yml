@@ -29,14 +29,16 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
+    - name: Get asset
+      id: get_asset
+      run: export ASSET="$(find . -name '*.vsix' -print | grep vizualisation-"    
     - name: Upload Release Asset
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        ASSET: ${{ (find . -name '*.vsix' -print | grep vizualisation-}}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: ${{ ASSET }}
+        asset_path: ${{ steps.get_asset.ASSET }}
         asset_name: vizualisation-${{ github.ref }}.vsix
         asset_content_type: application/vsix
