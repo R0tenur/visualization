@@ -1,5 +1,3 @@
-https://github.com/R0tenur/visualization/workflows/CI/badge.svg
-
 # Visualization
 
 Vizulizes databases in "Azure data studio" using mermaid.js
