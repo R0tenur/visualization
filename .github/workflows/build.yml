@@ -5,7 +5,7 @@ on:
     branches:
       - master
     tags:
-    - 'v*'  
+      - 'v*'  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: /vizualisation-*
+        file: vizualisation-*
         tag: ${{ github.ref }}
         overwrite: true
         file_glob: true
