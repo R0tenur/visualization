@@ -16,11 +16,20 @@ export const getMssqlDbSchema = async (
   username: string,
   password: string,
   server: string,
-  database: string
+  database: string,
+  trusted: boolean
 ): Promise<MssqlDb[]> => {
   let db = [] as MssqlDb[];
   try {
-    await sql.connect(`mssql://${username}:${password}@${server}/${database}`);
+    const config = {
+      user: username,
+      password: password,
+      server: server,
+      database: database,
+      trustedConnection: trusted
+    };
+
+    await sql.connect(config);
     const result = await sql.query`
   SELECT (SELECT 
       T.TABLE_NAME,

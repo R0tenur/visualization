@@ -20,8 +20,10 @@ export const addVisualisationPanel = () => {
           webview.connection.options.user,
           webview.connection.options.password,
           webview.connection.options.server,
-          webview.connection.options.database
+          webview.connection.options.database,
+          webview.connection.options.authenticationType !== 'SqlLogin'
         );
+        
         const chart = mssqlChartBuilder(tables);
         webview.postMessage(chart);
       }
