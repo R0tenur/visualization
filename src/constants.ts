@@ -1,1 +1,1 @@
-export const vizualisationPanelName: string = 'vizualisation-panel';
+export const visualizationPanelName: string = 'visualization-panel';

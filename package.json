@@ -1,7 +1,7 @@
 {
-  "name": "vizualisation",
-  "displayName": "Vizualisation",
-  "description": "Vizualisation of databases",
+  "name": "visualization",
+  "displayName": "Visualization",
+  "description": "Visualization of databases",
   "version": "0.0.2",
   "publisher": "R0tenur",
   "license": "MIT",
@@ -26,9 +26,9 @@
   "contributes": {
     "dashboard.tabs": [
       {
-        "id": "vizualisation-panel",
-        "title": "Vizualisation",
-        "description": "Vizualisation",
+        "id": "visualization-panel",
+        "title": "Visualization",
+        "description": "Visualization",
         "container": {
           "webview-container": "diagram-panel"
         }
