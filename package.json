@@ -56,6 +56,7 @@
   },
   "dependencies": {
     "@types/mssql": "^6.0.0",
+    "msnodesqlv8": "^0.8.6",
     "mssql": "^6.0.1"
   }
 }
