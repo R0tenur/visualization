@@ -16,10 +16,6 @@
             "fallbackAssetUri": "fallbackAssetUri",
             "files": [
                 {
-                    "assetType": "Microsoft.VisualStudio.Services.VSIXPackage",
-                    "source": "https://github.com/R0tenur/visualization/releases/download/v0.1.0/visualization-0.1.0.vsix"
-                },
-                {
                     "assetType": "Microsoft.SQLOps.DownloadPage",
                     "source": "https://github.com/R0tenur/visualization/releases/tag/v0.1.0"
                 },
