@@ -1,0 +1,42 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+clone_folder: c:\projects\node_modules\msnodesqlv8
+environment:
+  matrix:
+  - nodejs_version: "10"
+  - nodejs_version: "11"
+  - nodejs_version: "12"
+  - nodejs_version: "13"
+
+platform:
+  - x86
+  - x64
+
+before_test:
+  - sc config sqlbrowser start= auto
+  - net start sqlbrowser
+
+install:
+- ps: Install-Product node $env:nodejs_version $env:platform
+- npm install
+
+build_script:
+- cmd: tool\build.bat
+
+test_script:
+- cmd: |
+    SET MSSQL_VERSION=2014
+    powershell tool\appveyor.ps1 SQL2014
+    node --version
+    node unit.tests\cmd-test.js -a 2014 -t benchmark --repeats=5 --delay=4500 2>&1
+    node unit.tests\cmd-test.js -a 2014 -t benchmark --table=syscolumns --delay=5000 --repeats=5 2>&1
+    node runtest -a 2014 -t pause -t concurrent -t multiple-errors -t geography -t tvp -t warnings.js -t compoundqueries.js -t querycancel.js -t txn.js -t datatypes.js -t params.js -t query.js -t querytimeout.js -t connect.js -t bulk.js -t sproc.js -t prepared.js -t userbind.js -t dates.js 2>&1
+    net stop MSSQL$SQL2014
+
+    SET MSSQL_VERSION=2016
+    powershell tool\appveyor.ps1 SQL2016
+    node --version
+    node unit.tests\cmd-test.js -a 2016 -t benchmark --repeats=5 --delay=4500 2>&1
+    node unit.tests\cmd-test.js -a 2016 -t benchmark --table=syscolumns --delay=5000 --repeats=5 2>&1
+    node runtest -a 2016 -t pause -t concurrent -t multiple-errors -t geography -t tvp -t warnings.js -t compoundqueries.js -t querycancel.js -t txn.js -t datatypes.js -t params.js -t query.js -t querytimeout.js -t connect.js -t bulk.js -t sproc.js -t prepared.js -t userbind.js -t dates.js 2>&1
+    net stop MSSQL$SQL2016

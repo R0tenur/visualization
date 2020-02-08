@@ -21,7 +21,7 @@ export const addVisualisationPanel = () => {
           webview.connection.options.password,
           webview.connection.options.server,
           webview.connection.options.database,
-          webview.connection.options.authenticationType !== 'SqlLogin'
+          webview.connection.options.authenticationType === 'Integrated'
         );
         
         const chart = mssqlChartBuilder(tables);

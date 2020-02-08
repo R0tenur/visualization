@@ -1,0 +1,84 @@
+{
+  "name": "msnodesqlv8",
+  "description": "Microsoft Driver for Node.js SQL Server compatible with all versions of Node.",
+  "author": {
+    "name": "Stephen James"
+  },
+  "contributors": [
+    {
+      "name": "Microsoft"
+    },
+    {
+      "name": "Stephen James"
+    }
+  ],
+  "version": "0.8.6",
+  "keywords": [
+    "sql",
+    "prepared",
+    "statements",
+    "database",
+    "procedure",
+    "sproc",
+    "mssql",
+    "azure",
+    "sqlserver",
+    "tds",
+    "microsoft",
+    "msnodesql",
+    "node-sqlserver",
+    "tvp",
+    "sequelize"
+  ],
+  "homepage": "https://github.com/TimelordUK/node-sqlserver-v8",
+  "bugs": {
+    "url": "https://github.com/TimelordUK/node-sqlserver-v8/issues"
+  },
+  "licenses": [
+    {
+      "type": "Apache 2.0",
+      "url": "https://github.com/TimelordUK/node-sqlserver-v8/blob/master/LICENSE"
+    }
+  ],
+  "main": "./lib/sql.js",
+  "typings": "./lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimelordUK/node-sqlserver-v8.git"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "maintainers": [
+    {
+      "name": "timelorduk",
+      "email": "sjames8888@gmail.com"
+    }
+  ],
+  "eslintConfig": {
+    "env": {
+      "node": true
+    }
+  },
+  "devDependencies": {
+    "@types/electron": "^1.4.31",
+    "@types/node": "^12.12.12",
+    "@types/sequelize": "^4.28.7",
+    "asynquence": "^0.10.2",
+    "asynquence-contrib": "^0.28.2",
+    "electron": "^5.0.12",
+    "minimist": "^1.2.0",
+    "mocha": "^6.2.0",
+    "node-gyp": "^4.0.0",
+    "sequelize": "^5.21.2",
+    "standard": "^14.3.1",
+    "tedious": "^6.6.2"
+  },
+  "gitHead": "e025462083dd1140eed2519c449bc257482bc61b",
+  "scripts": {
+    "build": "call tool/build.bat",
+    "test": "call tool/testonce.bat"
+  },
+  "directories": {},
+  "dependencies": {}
+}
