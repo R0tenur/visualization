@@ -1,10 +1,11 @@
 {
-  "name": "visualization",
-  "displayName": "Visualization",
+  "name": "schema-visualization",
+  "displayName": "Schema Visualization",
   "description": "Visualization of databases",
   "version": "0.1.0",
   "publisher": "R0tenur",
   "license": "MIT",
+  "icon": "images/logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/R0tenur/visualization.git"
@@ -27,8 +28,8 @@
     "dashboard.tabs": [
       {
         "id": "visualization-panel",
-        "title": "Visualization",
-        "description": "Visualization",
+        "title": "Schema Visualization",
+        "description": "Schema visualization",
         "container": {
           "webview-container": "diagram-panel"
         }
