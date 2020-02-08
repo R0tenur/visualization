@@ -32,7 +32,7 @@ export const getMssqlDbSchema = async (
       }
     };
     if (trusted) {
-      sql = require('../windows/msnodesqlv8');
+      sql = require('msnodesqlv8');
     }
 
     await sql.connect(config);
