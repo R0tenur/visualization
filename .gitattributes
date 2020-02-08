@@ -1,2 +1,2 @@
 * linguist-vendored
-*/**/windows linguist-vendored=false
+*.cpp linguist-vendored=false
