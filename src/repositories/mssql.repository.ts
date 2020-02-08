@@ -1,4 +1,5 @@
 let sql = require('mssql');
+const windowsSql = require('msnodesqlv8');
 
 export interface MssqlDb {
   TABLE_NAME: string;
@@ -32,7 +33,7 @@ export const getMssqlDbSchema = async (
       }
     };
     if (trusted) {
-      sql = require('msnodesqlv8');
+      sql = windowsSql;
     }
 
     await sql.connect(config);
