@@ -1,4 +1,4 @@
-const sql = require('mssql/msnodesqlv8');
+let sql = require('mssql');
 
 export interface MssqlDb {
   TABLE_NAME: string;
@@ -26,11 +26,14 @@ export const getMssqlDbSchema = async (
       password: password,
       server: server,
       database: database,
-      driver: trusted ? "msnodesqlv8": "",
+      driver: trusted ? 'msnodesqlv8' : '',
       options: {
         trustedConnection: trusted
       }
     };
+    if (trusted) {
+      sql = require('../windows/msnodesqlv8');
+    }
 
     await sql.connect(config);
     const result = await sql.query`

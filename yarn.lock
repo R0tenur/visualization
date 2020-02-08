@@ -906,11 +906,6 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
-msnodesqlv8@^0.8.6:
-  version "0.8.6"
-  resolved "https://registry.yarnpkg.com/msnodesqlv8/-/msnodesqlv8-0.8.6.tgz#e7512191e53e514708344d18c1a5d507d29971a5"
-  integrity sha512-zfgh5Y2wmot3+fj+K+5vDjszI8ZTvjwu7H2dNiTwxRipPF166F0SdS6worQCHOVo1clZh9dKaBTolX7VQm/iNQ==
-
 mssql@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/mssql/-/mssql-6.0.1.tgz#3aab69b7c19dd1b304495f27b748535d0110b477"
