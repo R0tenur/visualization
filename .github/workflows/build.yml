@@ -11,8 +11,6 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install
       run: yarn
-    - name: Install for Windows
-      run: yarn add msnodesqlv8
     - name: Compile
       run: yarn run compile
     - name: Copy assets
