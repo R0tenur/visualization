@@ -1,5 +1,5 @@
-let sql = require('mssql');
-const windowsSql = () => require('msnodesqlv8');
+const windowsSql = () => require('mssql/msnodesqlv8');
+const allSql = require('mssql');
 
 export interface MssqlDb {
   TABLE_NAME: string;
@@ -21,21 +21,23 @@ export const getMssqlDbSchema = async (
   trusted: boolean
 ): Promise<MssqlDb[]> => {
   let db = [] as MssqlDb[];
+  let sql: any;
   try {
+    if(trusted) {
+      sql = windowsSql();
+    } else {
+      sql = allSql;
+    }
     const config = {
       user: username,
       password: password,
       server: server,
       database: database,
-      driver: trusted ? 'msnodesqlv8' : '',
+      driver: trusted ? "msnodesqlv8": "",
       options: {
         trustedConnection: trusted
       }
     };
-    if (trusted) {
-      sql = windowsSql();
-    }
-
     await sql.connect(config);
     const result = await sql.query`
   SELECT (SELECT 
@@ -110,14 +112,14 @@ export const listDatabases = async (
 ): Promise<string[]> => {
   let databases = [];
   try {
-    await sql.connect(`mssql://${username}:${password}@${server}`);
-    const result = await sql.query`USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')`;
+    await allSql.connect(`mssql://${username}:${password}@${server}`);
+    const result = await allSql.query`USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')`;
 
     databases = result.recordset.map((r: any) => r['name']);
   } catch (err) {
     // ... error checks
   } finally {
-    sql.close();
+    allSql.close();
   }
   return databases;
 };
