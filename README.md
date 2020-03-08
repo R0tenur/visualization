@@ -7,7 +7,7 @@ Vizulizes databases in "Azure data studio" using mermaid.js
 * Show database schema
 Double tap your db and press "Schema Visualization" on the dashboard.
 
-![Example of dashboard](https://raw.githubusercontent.com/R0tenur/visualization/master/example.png)
+![Example of dashboard](https://raw.githubusercontent.com/R0tenur/visualization/master/images/example.png)
 
 
 ## Tested
