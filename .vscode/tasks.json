@@ -4,8 +4,17 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Frontend Build",
             "type": "npm",
-            "script": "watch",
+            "script": "build",
+            "options": {
+                "cwd": "${workspaceRoot}/frontend"
+            }
+        },
+        {
+            "label": "Backend Build",
+            "type": "npm",
+            "script": "watch /backend",
             "problemMatcher": "$tsc-watch",
             "isBackground": true,
             "presentation": {
@@ -14,7 +23,10 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "dependsOn": [
+                "Frontend Build",
+            ]
         }
     ]
 }

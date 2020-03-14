@@ -17,12 +17,12 @@
             "request": "launch",
             "runtimeExecutable": "azuredatastudio",
             "args": [
-                "--extensionDevelopmentPath=${workspaceFolder}"
+                "--extensionDevelopmentPath=${workspaceFolder}/backend"
             ],
             "outFiles": [
-                "${workspaceFolder}/out/**/*.js"
+                "${workspaceFolder}/backend/out/**/*.js"
             ],
-            "preLaunchTask": "npm: watch"
+            "preLaunchTask": "Backend Build"
         },
         {
             "name": "Extension Tests",
