@@ -1,24 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+const background = '--vscode-tab-inactiveBackground';
+const forground = '--vscode-tab-inactiveForeground';
+const border = '--vscode-tab-border';
+const getCssVariable = (variable: string) => getComputedStyle(document.documentElement)
+  .getPropertyValue(variable);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div
+      style={{
+        backgroundColor: getCssVariable(background),
+        color: getCssVariable(forground),
+        border: getCssVariable(border),
+        fontWeight: 'bold',
+        borderWidth: '2px',
+        width: '100px',
+        height: '100px'
+      }}>
+      Nothing
     </div>
   );
 }
