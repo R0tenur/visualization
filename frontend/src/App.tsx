@@ -1,17 +1,13 @@
 import React from 'react';
-const background = '--vscode-tab-inactiveBackground';
-const forground = '--vscode-tab-inactiveForeground';
-const border = '--vscode-tab-border';
-const getCssVariable = (variable: string) => getComputedStyle(document.documentElement)
-  .getPropertyValue(variable);
+import constants from './settings/constants';
 
 function App() {
   return (
     <div
       style={{
-        backgroundColor: getCssVariable(background),
-        color: getCssVariable(forground),
-        border: getCssVariable(border),
+        backgroundColor: constants.backgroundColor,
+        color: constants.fontColor,
+        border: constants.borderBorder,
         fontWeight: 'bold',
         borderWidth: '2px',
         width: '100px',
