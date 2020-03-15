@@ -14,5 +14,5 @@ export default {
     tablesOnRow: 4,
     backgroundColor: getCssVariable(background),
     fontColor: getCssVariable(forground),
-    borderBorder: getCssVariable(border),
+    borderColor: getCssVariable(border),
 };

@@ -1,20 +1,9 @@
 import React from 'react';
-import constants from './settings/constants';
+import Diagram from './components/Diagram';
 
 function App() {
   return (
-    <div
-      style={{
-        backgroundColor: constants.backgroundColor,
-        color: constants.fontColor,
-        border: constants.borderBorder,
-        fontWeight: 'bold',
-        borderWidth: '2px',
-        width: '100px',
-        height: '100px'
-      }}>
-      Nothing
-    </div>
+    <Diagram/>
   );
 }
 
