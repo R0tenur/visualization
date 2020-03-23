@@ -31,9 +31,9 @@ export const getMssqlDbSchema = async (
     const config = {
       user: username,
       password: password,
-      server: server,
+      server: server === "localhost" ? server : "localhost:1433",
       database: database,
-      driver: trusted ? "msnodesqlv8": "",
+      driver: trusted ? "{SQL Server Native Client 11.0}": "",
       options: {
         trustedConnection: trusted
       }
