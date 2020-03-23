@@ -48,18 +48,18 @@
   },
   "devDependencies": {
     "@types/mocha": "^5.2.7",
-    "@types/node": "^13.1.7",
+    "@types/node": "^13.9.3",
     "azdata": "1.0.0",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.4",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3",
     "vsce": "^1.71.0",
     "vscode": "^1.1.36"
   },
   "dependencies": {
     "@types/mssql": "^6.0.0",
-    "mssql": "^6.0.1"
+    "mssql": "^6.2.0"
   },
   "optionalDependencies": {
-    "msnodesqlv8": "^0.8.6"
+    "msnodesqlv8": "^0.8.14"
   }
 }
