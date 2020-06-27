@@ -1,35 +1,37 @@
-import { MssqlDb } from '../repositories/mssql.repository';
+import { DatabaseTable } from "../models/database-table.model";
+import { DatabaseColumn } from "../models/database-column.model";
 
-export const mssqlChartBuilder = (tables: MssqlDb[]) => {
+export const chartBuilder = (tables: DatabaseTable[]) => {
   const tableStrings: string[] = [];
   const tableRelations: string[] = [];
 
   tables.forEach((table: any) => {
     let columString = '';
-    table.C.forEach((column: any) => {
-      columString += `${column.COLUMN_NAME}
+    table.Columns.forEach((column: DatabaseColumn) => {
+      columString += `${column.Name}
           `;
-      if (column.REFERENCE_TO_TABLE) {
+      if (column.ReferenceTable) {
         tableRelations.push(
-          `${table.TABLE_NAME} --|> ${column.REFERENCE_TO_TABLE}: ${column.REFERENCE_COLUMN}
+          `${table.Name} --|> ${column.ReferenceTable}: ${column.ReferenceColumn}
             `
         );
       }
     });
     let tableString = `
-        class ${table.TABLE_NAME}{
+        class ${table.Name}{
             ${columString}
         }
         `;
     tableStrings.push(tableString);
   });
-
-  return {
-    chart: ` classDiagram
+  if (tableStrings.length === 0) {
+    return null;
+  }
+  return `classDiagram
       ${tableStrings.join('')}
       ${tableRelations.join('')}
-      `
-  };
+      `;
+
 };
 
 export const databaseListChartBuilder = (databases: string[]): any => {
