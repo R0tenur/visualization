@@ -1,3 +1,4 @@
+![GitHub All Releases](https://img.shields.io/github/downloads/r0tenur/visualization/total)
 # Schema Visualization
 
 Vizulizes databases in "Azure data studio" using mermaid.js
