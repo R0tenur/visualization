@@ -3,6 +3,9 @@ All notable changes to the "Schema Visualization" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.4.0]
+- Bug fix for handling no standard port
+
 ## [0.3.0]
 - Added fallback way of getting the schema
 - Removed JSON AUTO dependency
