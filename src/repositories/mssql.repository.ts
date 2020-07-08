@@ -24,14 +24,17 @@ export const getMssqlDbSchema = async (
     } else {
       sql = allSql;
     }
+    const parsedSever = parsePort(server);
     const config = {
       user: username,
       password: password,
-      server: server,
+      server: parsedSever.server,
+      port: parsedSever.port,
       database: database,
       driver: trusted ? "msnodesqlv8" : "",
       options: {
-        trustedConnection: trusted
+        trustedConnection: trusted,
+        port: parsedSever.port
       }
     };
     await sql.connect(config);
@@ -50,7 +53,10 @@ export const getMssqlDbSchema = async (
   }
   return db;
 };
-
+const parsePort = (server: string): { server: string, port: number } => {
+  const parsedServer = server.split(',');
+  return { server: parsedServer[0], port: Number.parseInt(parsedServer[1]) || 1433 };
+}
 const toTables = (dbResult): DatabaseTable[] => {
   const result: DatabaseTable[] = [];
   for (let index = 0; index < dbResult.recordset.length; index++) {
