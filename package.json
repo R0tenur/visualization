@@ -57,7 +57,8 @@
   },
   "dependencies": {
     "@types/mssql": "^6.0.0",
-    "mssql": "^6.2.0"
+    "mssql": "^6.2.0",
+    "postgres": "^1.0.2"
   },
   "optionalDependencies": {
     "msnodesqlv8": "^0.8.14"
