@@ -55,7 +55,7 @@ export const getMssqlDbSchema = async (
 };
 const parsePort = (server: string): { server: string, port: number } => {
   const parsedServer = server.split(',');
-  return { server: parsedServer[0], port: Number.parseInt(parsedServer[1]) || 1433 };
+  return { server: parsedServer[0].replace('tcp:', ''), port: Number.parseInt(parsedServer[1]) || 1433 };
 }
 const toTables = (dbResult): DatabaseTable[] => {
   const result: DatabaseTable[] = [];
