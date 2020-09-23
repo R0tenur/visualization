@@ -2,7 +2,7 @@
   "name": "schema-visualization",
   "displayName": "Schema Visualization",
   "description": "Visualization of databases",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "publisher": "R0tenur",
   "license": "MIT",
   "icon": "images/logo.png",
@@ -54,12 +54,5 @@
     "typescript": "^3.8.3",
     "vsce": "^1.71.0",
     "vscode": "^1.1.36"
-  },
-  "dependencies": {
-    "@types/mssql": "^6.0.0",
-    "mssql": "^6.2.0"
-  },
-  "optionalDependencies": {
-    "msnodesqlv8": "^0.8.14"
   }
 }
