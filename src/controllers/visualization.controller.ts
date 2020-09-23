@@ -18,12 +18,8 @@ export const VisualizationController = () => {
                     status: Status.GettingTableData,
                 });
                 const database = await getMssqlDbSchema(
-                    webview.connection.options.user,
-                    webview.connection.options.password,
-                    webview.connection.options.server,
-                    webview.connection.options.database,
-                    webview.connection.options.authenticationType === 'Integrated'
-                );
+                    webview.connection.connectionId,
+                    webview.connection.options.database);
                 webview.postMessage({
                     status: Status.BuildingChart,
                     errors: database.errors,

@@ -1,66 +1,35 @@
 import { Database } from "../models/database.model";
 import { DatabaseTable } from "../models/database-table.model";
+import { runQuery } from "./base.repository";
+import { Provider } from "../models/provider.enum";
 
-const windowsSql = () => require('mssql/msnodesqlv8');
-const allSql = require('mssql');
+interface DbResponse {
+  TABLE_NAME: string;
+  COLUMN_NAME: string;
+  REFERENCE_TO_TABLE: string;
+  REFERENCE_COLUMN: string;
+  FOREIGN_KEY: string;
 
-
+}
 
 export const getMssqlDbSchema = async (
-  username: string,
-  password: string,
-  server: string,
-  database: string,
-  trusted: boolean
+  connectionId: string,
+  databaseName: string,
 ): Promise<Database> => {
   let db: Database = {
     tables: [],
     errors: []
   } as Database;
-  let sql: any;
-  try {
-    if (trusted) {
-      sql = windowsSql();
-    } else {
-      sql = allSql;
-    }
-    const parsedSever = parsePort(server);
-    const config = {
-      user: username,
-      password: password,
-      server: parsedSever.server,
-      port: parsedSever.port,
-      database: database,
-      driver: trusted ? "msnodesqlv8" : "",
-      options: {
-        trustedConnection: trusted,
-        port: parsedSever.port
-      }
-    };
-    await sql.connect(config);
 
-    let dbEntry = await getFromSysTables(sql);
-
-    if (!dbEntry) {
-      dbEntry = await sql.query(informationsSchemaQuery);
-    }
-
-    db.tables = toTables(dbEntry);
-  } catch (err) {
-    db.errors.push('Error getting data: ' + err.message);
-  } finally {
-    sql.close();
-  }
+  let dbEntry = await runQuery<DbResponse>(Provider.MSSQL, connectionId, informationsSchemaQuery(databaseName));
+  db.tables = toTables(dbEntry);
   return db;
 };
-const parsePort = (server: string): { server: string, port: number } => {
-  const parsedServer = server.split(',');
-  return { server: parsedServer[0].replace('tcp:', ''), port: Number.parseInt(parsedServer[1]) || 1433 };
-}
-const toTables = (dbResult): DatabaseTable[] => {
+
+const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
   const result: DatabaseTable[] = [];
-  for (let index = 0; index < dbResult.recordset.length; index++) {
-    const element = dbResult.recordset[index];
+  for (let index = 0; index < dbResult.length; index++) {
+    const element = dbResult[index];
     const columnToAdd = {
       Name: element.COLUMN_NAME,
       ReferenceColumn: element.REFERENCE_COLUMN,
@@ -83,91 +52,21 @@ const toTables = (dbResult): DatabaseTable[] => {
   return result;
 };
 
-const getFromSysTables = async (sql) => {
-  try {
-    return await sql.query(sysTableQuery);
-  } catch (error) {
-
-  }
-};
 
 export const listDatabases = async (
-  username: string,
-  password: string,
-  server: string
+  connectionId: string
 ): Promise<string[]> => {
-  let databases = [];
-  try {
-    await allSql.connect(`mssql://${username}:${password}@${server}`);
-    const result = await allSql.query`USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')`;
-
-    databases = result.recordset.map((r: any) => r['name']);
-  } catch (err) {
-    // ... error checks
-  } finally {
-    allSql.close();
-  }
-  return databases;
+  return await runQuery<string>(Provider.MSSQL, connectionId, databaseListQuery);
 };
 
-const sysTableQuery = `
-SELECT
-    T.name as 'TABLE_NAME',
-    Columns.name as 'COLUMN_NAME',
-    (SELECT TOP 1
-        TAB2.NAME
-    FROM SYS.FOREIGN_KEY_COLUMNS fkc
-        INNER JOIN SYS.OBJECTS obj
-        ON OBJ.OBJECT_ID = fkc.constraint_object_id
-        INNER JOIN SYS.TABLES tab1
-        ON tab1.OBJECT_ID = fkc.parent_object_id
-        INNER JOIN sys.schemas sch
-        ON tab1.schema_id = sch.schema_id
-        INNER JOIN sys.columns col1
-        ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-        INNER JOIN sys.tables tab2
-        ON tab2.OBJECT_ID = fkc.referenced_object_id
-        INNER JOIN sys.columns col2
-        ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-    WHERE (col1.name != col2.NAME OR tab1.name != tab2.name) AND tab1.name = t.name AND col1.name = Columns.name) as REFERENCE_TO_TABLE,
-    (SELECT TOP 1
-        col2.name AS [referenced_column]
-    FROM SYS.FOREIGN_KEY_COLUMNS fkc
-        INNER JOIN SYS.OBJECTS obj
-        ON OBJ.OBJECT_ID = fkc.constraint_object_id
-        INNER JOIN SYS.TABLES tab1
-        ON tab1.OBJECT_ID = fkc.parent_object_id
-        INNER JOIN sys.schemas sch
-        ON tab1.schema_id = sch.schema_id
-        INNER JOIN sys.columns col1
-        ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-        INNER JOIN sys.tables tab2
-        ON tab2.OBJECT_ID = fkc.referenced_object_id
-        INNER JOIN sys.columns col2
-        ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-    WHERE (col1.name != col2.NAME OR tab1.name != tab2.name) AND tab1.name = t.name AND col1.name = Columns.name) as REFERENCE_COLUMN,
-    (SELECT TOP 1
-        OBJ.NAME
-    FROM SYS.FOREIGN_KEY_COLUMNS fkc
-        INNER JOIN SYS.OBJECTS obj
-        ON OBJ.OBJECT_ID = fkc.constraint_object_id
-        INNER JOIN SYS.TABLES tab1
-        ON tab1.OBJECT_ID = fkc.parent_object_id
-        INNER JOIN sys.schemas sch
-        ON tab1.schema_id = sch.schema_id
-        INNER JOIN sys.columns col1
-        ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-        INNER JOIN sys.tables tab2
-        ON tab2.OBJECT_ID = fkc.referenced_object_id
-        INNER JOIN sys.columns col2
-        ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-    WHERE (col1.name != col2.NAME OR tab1.name != tab2.name) AND tab1.name = t.name AND col1.name = Columns.name) as FOREIGN_KEY
+const databaseListQuery =
+  `
+    USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')
+  `;
 
-FROM SYS.TABLES T
-    INNER JOIN SYS.COLUMNS Columns ON Columns.object_id = T.object_id
-`;
 
-const informationsSchemaQuery = `
+const informationsSchemaQuery = (dbName: string) => `
+USE ${dbName};
 SELECT
         T.TABLE_NAME,
         Columns.COLUMN_NAME,
