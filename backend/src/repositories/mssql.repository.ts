@@ -1,125 +1,120 @@
-const windowsSql = () => require('mssql/msnodesqlv8');
-const allSql = require('mssql');
+import { Database } from "../models/database.model";
+import { DatabaseTable } from "../models/database-table.model";
+import { runQuery } from "./base.repository";
+import { Provider } from "../models/provider.enum";
 
-export interface MssqlDb {
+interface DbResponse {
   TABLE_NAME: string;
-  C: MssqlColumn[];
-}
-
-export interface MssqlColumn {
   COLUMN_NAME: string;
-  REFERENCE_COLUMN: string;
   REFERENCE_TO_TABLE: string;
+  REFERENCE_COLUMN: string;
   FOREIGN_KEY: string;
+
 }
 
 export const getMssqlDbSchema = async (
-  username: string,
-  password: string,
-  server: string,
-  database: string,
-  trusted: boolean
-): Promise<MssqlDb[]> => {
-  let db = [] as MssqlDb[];
-  let sql: any;
-  try {
-    if(trusted) {
-      sql = windowsSql();
-    } else {
-      sql = allSql;
-    }
-    const config = {
-      user: username,
-      password: password,
-      server: server,
-      database: database,
-      driver: trusted ? "msnodesqlv8": "",
-      options: {
-        trustedConnection: trusted
-      }
-    };
-    await sql.connect(config);
-    const result = await sql.query`
-  SELECT (SELECT 
-      T.TABLE_NAME,
-      C.COLUMN_NAME,
-      (SELECT TOP 1
-      TAB2.NAME
-      FROM SYS.FOREIGN_KEY_COLUMNS fkc
-      INNER JOIN SYS.OBJECTS obj
-          ON OBJ.OBJECT_ID = fkc.constraint_object_id
-      INNER JOIN SYS.TABLES tab1
-          ON tab1.OBJECT_ID = fkc.parent_object_id
-      INNER JOIN sys.schemas sch
-          ON tab1.schema_id = sch.schema_id
-      INNER JOIN sys.columns col1
-          ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-      INNER JOIN sys.tables tab2
-          ON tab2.OBJECT_ID = fkc.referenced_object_id
-      INNER JOIN sys.columns col2
-          ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-      WHERE col1.name = C.COLUMN_NAME AND C.TABLE_NAME != TAB2.NAME) as REFERENCE_TO_TABLE,
-      (SELECT TOP 1
-      col2.name AS [referenced_column]
-      FROM SYS.FOREIGN_KEY_COLUMNS fkc
-      INNER JOIN SYS.OBJECTS obj
-          ON OBJ.OBJECT_ID = fkc.constraint_object_id
-      INNER JOIN SYS.TABLES tab1
-          ON tab1.OBJECT_ID = fkc.parent_object_id
-      INNER JOIN sys.schemas sch
-          ON tab1.schema_id = sch.schema_id
-      INNER JOIN sys.columns col1
-          ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-      INNER JOIN sys.tables tab2
-          ON tab2.OBJECT_ID = fkc.referenced_object_id
-      INNER JOIN sys.columns col2
-          ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-      WHERE col1.name = C.COLUMN_NAME AND C.TABLE_NAME != TAB2.NAME) as REFERENCE_COLUMN,
-       (SELECT TOP 1
-      OBJ.NAME
-      FROM SYS.FOREIGN_KEY_COLUMNS fkc
-      INNER JOIN SYS.OBJECTS obj
-          ON OBJ.OBJECT_ID = fkc.constraint_object_id
-      INNER JOIN SYS.TABLES tab1
-          ON tab1.OBJECT_ID = fkc.parent_object_id
-      INNER JOIN sys.schemas sch
-          ON tab1.schema_id = sch.schema_id
-      INNER JOIN sys.columns col1
-          ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-      INNER JOIN sys.tables tab2
-          ON tab2.OBJECT_ID = fkc.referenced_object_id
-      INNER JOIN sys.columns col2
-          ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-      WHERE col1.name = C.COLUMN_NAME AND C.TABLE_NAME != TAB2.NAME) as FOREIGN_KEY
-  
-      FROM INFORMATION_SCHEMA.TABLES T
-      INNER JOIN INFORMATION_SCHEMA.COLUMNS C ON C.TABLE_NAME = T.TABLE_NAME
-      WHERE T.TABLE_TYPE='BASE TABLE' FOR JSON AUTO) AS 'JSONRESULT'`;
+  connectionId: string,
+  databaseName: string,
+): Promise<Database> => {
+  let db: Database = {
+    tables: [],
+    errors: []
+  } as Database;
 
-    db = JSON.parse(result.recordset[0]['JSONRESULT']) as MssqlDb[];
-  } catch (err) {
-    // ... error checks
-  } finally {
-    sql.close();
-  }
+  let dbEntry = await runQuery<DbResponse>(Provider.MSSQL, connectionId, informationsSchemaQuery(databaseName));
+  db.tables = toTables(dbEntry);
   return db;
 };
 
-export const listDatabases = async (
-  username: string,
-  password: string,
-  server: string
-): Promise<string[]> => {
-  let databases = [];
-  try {
-    await allSql.connect(`mssql://${username}:${password}@${server}`);
-    const result = await allSql.query`USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')`;
+const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
+  const result: DatabaseTable[] = [];
+  for (let index = 0; index < dbResult.length; index++) {
+    const element = dbResult[index];
+    const columnToAdd = {
+      Name: element.COLUMN_NAME,
+      ReferenceColumn: element.REFERENCE_COLUMN,
+      ReferenceTable: element.REFERENCE_TO_TABLE,
+      ForeignKey: element.FOREIGN_KEY,
+    };
+    const existing = result.find(t => t.Name === element.TABLE_NAME);
 
-    databases = result.recordset.map((r: any) => r['name']);
-  } catch (err) {
-    // ... error checks
-  } finally {
-    allSql.close();
+    if (existing) {
+      existing.Columns.push(columnToAdd);
+    } else {
+      result.push({
+        Name: element.TABLE_NAME,
+        Columns: [
+          columnToAdd
+        ]
+      });
+    }
   }
-  return databases;
+  return result;
 };
+
+
+export const listDatabases = async (
+  connectionId: string
+): Promise<string[]> => {
+  return await runQuery<string>(Provider.MSSQL, connectionId, databaseListQuery);
+};
+
+const databaseListQuery =
+  `
+    USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')
+  `;
+
+
+const informationsSchemaQuery = (dbName: string) => `
+USE ${dbName};
+SELECT
+        T.TABLE_NAME,
+        Columns.COLUMN_NAME,
+        (SELECT
+            KCU2.TABLE_NAME
+        FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS RC
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU1 ON 
+        KCU1.CONSTRAINT_CATALOG = RC.CONSTRAINT_CATALOG AND
+                KCU1.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA AND
+                KCU1.CONSTRAINT_NAME = RC.CONSTRAINT_NAME
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU2 ON 
+        KCU2.CONSTRAINT_CATALOG = RC.UNIQUE_CONSTRAINT_CATALOG AND
+                KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA AND
+                KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME
+        WHERE KCU1.ORDINAL_POSITION = KCU2.ORDINAL_POSITION AND
+            KCU1.TABLE_NAME = T.TABLE_NAME AND KCU1.COLUMN_NAME = Columns.COLUMN_NAME) as REFERENCE_TO_TABLE,
+
+        (SELECT
+            KCU2.COLUMN_NAME
+        FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS RC
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU1 ON 
+        KCU1.CONSTRAINT_CATALOG = RC.CONSTRAINT_CATALOG AND
+                KCU1.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA AND
+                KCU1.CONSTRAINT_NAME = RC.CONSTRAINT_NAME
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU2 ON 
+        KCU2.CONSTRAINT_CATALOG = RC.UNIQUE_CONSTRAINT_CATALOG AND
+                KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA AND
+                KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME
+        WHERE KCU1.ORDINAL_POSITION = KCU2.ORDINAL_POSITION AND
+            KCU1.TABLE_NAME = T.TABLE_NAME AND KCU1.COLUMN_NAME = Columns.COLUMN_NAME) as REFERENCE_COLUMN,
+
+
+        (SELECT KCU1.CONSTRAINT_NAME AS 'FOREIGN_KEY'
+        FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS RC
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU1 ON 
+        KCU1.CONSTRAINT_CATALOG = RC.CONSTRAINT_CATALOG AND
+                KCU1.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA AND
+                KCU1.CONSTRAINT_NAME = RC.CONSTRAINT_NAME
+            LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU2 ON 
+        KCU2.CONSTRAINT_CATALOG = RC.UNIQUE_CONSTRAINT_CATALOG AND
+                KCU2.CONSTRAINT_SCHEMA = RC.UNIQUE_CONSTRAINT_SCHEMA AND
+                KCU2.CONSTRAINT_NAME = RC.UNIQUE_CONSTRAINT_NAME
+        WHERE KCU1.ORDINAL_POSITION = KCU2.ORDINAL_POSITION AND
+            KCU1.TABLE_NAME = T.TABLE_NAME AND KCU1.COLUMN_NAME = Columns.COLUMN_NAME
+) as FOREIGN_KEY
+
+    FROM INFORMATION_SCHEMA.TABLES T
+        INNER JOIN INFORMATION_SCHEMA.COLUMNS Columns ON Columns.TABLE_NAME = T.TABLE_NAME
+ WHERE T.TABLE_TYPE='BASE TABLE'
+
+`;

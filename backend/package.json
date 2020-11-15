@@ -2,7 +2,7 @@
   "name": "schema-visualization",
   "displayName": "Schema Visualization",
   "description": "Visualization of databases",
-  "version": "0.2.0",
+  "version": "0.6.0",
   "publisher": "R0tenur",
   "license": "MIT",
   "icon": "images/logo.png",
@@ -47,18 +47,11 @@
   },
   "devDependencies": {
     "@types/mocha": "^5.2.7",
-    "@types/node": "^13.1.7",
+    "@types/node": "^13.9.3",
     "azdata": "1.0.0",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.4",
+    "tslint": "^6.1.0",
+    "typescript": "^3.8.3",
     "vsce": "^1.71.0",
     "vscode": "^1.1.36"
-  },
-  "dependencies": {
-    "@types/mssql": "^6.0.0",
-    "mssql": "^6.0.1"
-  },
-  "optionalDependencies": {
-    "msnodesqlv8": "^0.8.6"
   }
 }
