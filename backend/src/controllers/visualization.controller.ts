@@ -45,7 +45,8 @@ const showResult = (webview: DashboardWebview, chart: string, database: Database
             status: Status.Complete,
             databaseName: webview.connection.options.database,
             chart,
-            errors: database.errors
+            errors: database.errors,
+            tables: database.tables,
         });
     } else {
         webview.postMessage({
