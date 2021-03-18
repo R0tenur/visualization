@@ -41,18 +41,22 @@
     "compile": "tsc -p ./",
     "watch": "yarn run copy-web && tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install && node ./node_modules/azdata/bin/install",
-    "test": "yarn run compile && node ./node_modules/vscode/bin/test",
     "proposedapi": "node installTypings.js",
     "copy-web": "cp -R ./src/web ./out",
-    "pack": "vsce package"
+    "pack": "vsce package",
+    "test": "jest"
   },
   "devDependencies": {
-    "@types/mocha": "^5.2.7",
+    "@types/jest": "^26.0.20",
     "@types/node": "^13.9.3",
     "azdata": "1.0.0",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.5.4",
     "tslint": "^6.1.0",
     "typescript": "^3.8.3",
     "vsce": "^1.71.0",
     "vscode": "^1.1.36"
+  },
+  "dependencies": {
   }
 }
