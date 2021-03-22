@@ -6,21 +6,26 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
   const tableRelations: string[] = [];
 
   tables.forEach((table: any) => {
+    const columnNames: string[] = [];
     let columString = '';
     table.Columns.forEach((column: DatabaseColumn) => {
-      columString += `${column.Name}
+      if (!columnNames.find(x => x === column.Name)) {
+        columnNames.push(column.Name);
+        columString += `${column.Name}
           `;
-      if (column.ReferenceTable) {
-        tableRelations.push(
-          `${table.Name} --|> ${column.ReferenceTable}: ${column.ReferenceColumn}
+        if (column.ReferenceTable) {
+          tableRelations.push(
+            `${table.Name} --|> ${column.ReferenceTable}: ${column.ReferenceColumn}
             `
-        );
+          );
+        }
       }
+
     });
     let tableString = `
-        class ${table.Name}{
-            ${columString}
-        }
+class ${table.Name} {
+    ${columString}
+}
         `;
     tableStrings.push(tableString);
   });
