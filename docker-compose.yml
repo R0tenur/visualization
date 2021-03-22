@@ -1,0 +1,17 @@
+version: '3'
+services:
+  postgres:
+    image: postgres
+    ports:
+    - "5432:5432"
+    environment:
+      POSTGRES_USER: "sa"
+      POSTGRES_PASSWORD: "dummyPassword123"
+      POSTGRES_DB: "default"
+  sqlserver:
+      image: "mcr.microsoft.com/mssql/server"
+      ports:
+      - "1433:1433"
+      environment:
+          SA_PASSWORD: "dummyPassword123"
+          ACCEPT_EULA: "Y"
