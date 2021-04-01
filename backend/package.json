@@ -14,7 +14,7 @@
     "url": "https://github.com/R0tenur/visualization/issues"
   },
   "engines": {
-    "vscode": "^1.31.0",
+    "vscode": "*",
     "azdata": "*"
   },
   "categories": [
@@ -58,5 +58,6 @@
     "vscode": "^1.1.36"
   },
   "dependencies": {
+    "svg-to-pdfkit": "^0.1.8"
   }
 }

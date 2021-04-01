@@ -1,0 +1,21 @@
+* {
+  font-family: "Roboto", sans-serif;
+  color: var(--vscode-foreground);
+}
+
+body:not([data-vscode-theme-name]) {
+  --vscode-foreground: #ccccc;
+  color: #cccccc;
+  background-color: #282c34;
+}
+body {
+  overflow: hidden;
+}
+.w-100 {
+  width: 100%;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

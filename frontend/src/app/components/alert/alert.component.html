@@ -1,0 +1,26 @@
+<div *ngIf="alertService.Alert$ | async as alert" class="alert">
+      <h4 class="title">
+        An error occured!
+      </h4>
+    <h4 class="title">
+      Status: {{alert.status}}
+    </h4>
+    <ul>
+      <li *ngFor="let er of alert.errors">{{er}}</li>
+    </ul>
+
+    <h4 class="title">
+      Raw data:
+    </h4>
+    <p>
+      {{alert.rawData | json}}
+    </p>
+
+    <h4 class="title">
+      Found a bug?
+    </h4>
+    <p>
+      Report it here: https://github.com/R0tenur/visualization/issues
+    </p>
+    <app-button (clicked)="alertService.dismissError()">Dismiss</app-button>
+</div>

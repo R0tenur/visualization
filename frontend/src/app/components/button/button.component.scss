@@ -1,0 +1,17 @@
+.button {
+  color: var(--vscode-foreground);
+  text-transform: uppercase;
+  text-decoration: none;
+  background: none;
+  padding: 10px;
+
+  display: inline-block;
+  transition: all 0.4s ease 0s;
+  border: none;
+  &:hover {
+      border: 2px solid var(--vscode-foreground);
+  }
+  &:focus {
+     border: 2px solid var(--vscode-foreground);
+  }
+}
