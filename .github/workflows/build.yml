@@ -9,14 +9,16 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Install
-      run: yarn
+    - name: Install Backend
+      run: cd backend && yarn && mkdir out
+    - name: Install Frontend
+      run: cd frontend && yarn
+    - name: Build frontend
+      run: cd frontend && yarn run build
     - name: Compile
-      run: yarn run compile
-    - name: Copy assets
-      run: yarn run copy-web
+      run: cd backend && yarn run compile
     - name: Pack 
-      run: yarn run pack
+      run: cd backend && yarn run pack
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1.0.0

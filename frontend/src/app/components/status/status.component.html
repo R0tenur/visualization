@@ -1,0 +1,32 @@
+<div class="status" *ngIf="dataStudio.Status$ | async as status; else loading">
+  <div [ngSwitch]="status">
+    <div class="w-100" *ngSwitchCase="Status.GettingTableData">
+      <ng-container *ngTemplateOutlet="spinner"></ng-container>
+      <div class="center">Getting the database structure...</div>
+    </div>
+
+    <div class="w-100" *ngSwitchCase="Status.BuildingChart">
+          <ng-container *ngTemplateOutlet="spinner"></ng-container>
+          <div class="center">Building your chart...</div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="wh-100">
+    <ng-container *ngTemplateOutlet="spinner"></ng-container>
+    <div class="center"> <br> Loading...</div>
+  </div>
+</ng-template>
+
+
+<ng-template #spinner>
+  <div class="w-100">
+    <div class="center">
+      <div class="loading-indicator">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+</ng-template>

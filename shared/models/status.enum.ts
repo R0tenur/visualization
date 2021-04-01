@@ -3,5 +3,5 @@ export enum Status {
     BuildingChart = 'BUILDING_CHART',
     Complete = 'COMPLETE',
     NoDatabase = 'NO_DATABASE',
-    Error = 'ERROR'
-}
+    Error = 'ERROR',
+};
