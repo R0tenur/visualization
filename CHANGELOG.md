@@ -3,6 +3,11 @@ All notable changes to the "Schema Visualization" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.7.0]
+- New UI
+- Export support
+- Zoom support
+
 ## [0.4.0]
 - Bug fix for handling no standard port
 
