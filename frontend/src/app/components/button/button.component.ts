@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { boolean } from 'yargs';
 
 @Component({
   selector: 'app-button',
