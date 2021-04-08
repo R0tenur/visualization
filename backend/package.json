@@ -5,7 +5,7 @@
   "version": "0.7.0",
   "publisher": "R0tenur",
   "license": "MIT",
-  "icon": "../images/logo.png",
+  "icon": "logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/R0tenur/visualization.git"
