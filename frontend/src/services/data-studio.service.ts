@@ -87,8 +87,9 @@ export class DataStudioService {
   private initializeMermaid(): void {
     mermaid.initialize({
       startOnLoad: false,
+      maxTextSize: 90000,
       theme: this.isDarkMode() ? 'dark' : 'neutral'
-    });
+    } as any);
   }
 
   private buildSvg(markdown: string): Observable<Exportable> {
