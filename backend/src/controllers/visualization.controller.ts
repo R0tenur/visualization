@@ -1,5 +1,4 @@
-import { Uri, window } from "vscode";
-import fs = require('fs');
+import { window } from "vscode";
 import { dashboard, DashboardWebview } from "azdata";
 import { loadWebView } from "../web.loader";
 import { visualizationPanelName } from "../constants";
@@ -7,7 +6,7 @@ import { getMssqlDbSchema } from "../repositories/mssql.repository";
 import { chartBuilder } from "../services/builder.service";
 import { Database } from "../models/database.model";
 import { Status } from "../models/status.enum";
-import { saveToPdf } from "../services/pdf.service";
+import { exportService } from "../services/export.service";
 
 export const VisualizationController = () => {
     let counterHtml = loadWebView();
@@ -61,37 +60,8 @@ const showResult = (webview: DashboardWebview, chart: string, database: Database
     }
 };
 const recivedMessage = async (e: any) => {
-    const selected = 'svg'; //await window.showQuickPick([...['svg', 'pdf']]);
+    const selected = await window.showQuickPick([...['svg', 'md']]);
     let data = e.data;
-    await exportDataWithConfirmation(`chart.${selected}`, data, selected);
-
+    await exportService(`chart.${selected}`, data, selected);
 };
 
-const exportDataWithConfirmation = async (fileName: string, data: string, fileFormat: string) => {
-    window.showSaveDialog({
-        defaultUri: Uri.file(fileName),
-        filters: {
-            fileFormat: [fileFormat],
-        }
-    }).then((uri: Uri | undefined) => {
-        if (uri) {
-            const value = uri.fsPath;
-            if (fileFormat === 'svg') {
-                fs.writeFile(value, data, (error) => {
-                    if (error) {
-                        window.showErrorMessage("Could not saved to file: " + value + ": " + error.message);
-                    } else {
-                        window.showInformationMessage("Chart successfully saved to file '" + value + "'.");
-                    }
-                });
-            }
-
-            if (fileFormat === 'pdf') {
-                saveToPdf(value, data)
-                    .then(() => window.showInformationMessage("Chart successfully saved to file '" + value + "'."))
-                    .catch((error) => window.showErrorMessage("Could not saved to file: " + value + ": " + error.message));
-            }
-
-        }
-    });
-}

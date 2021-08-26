@@ -4,6 +4,7 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { Status } from '../../../shared/models/status.enum';
 import mermaid from 'mermaid';
 import { AlertService } from './alert.service';
+import { Exportable } from '../app/models/exportable.model';
 declare const acquireVsCodeApi: () => ({
   postMessage: (message: any) => void;
 });
@@ -21,7 +22,7 @@ interface Event {
   providedIn: 'root'
 })
 export class DataStudioService {
-  public get Database$(): Observable<string> {
+  public get Database$(): Observable<Exportable> {
     return this.database$;
   }
   public get DatabaseName$(): Observable<string> {
@@ -32,7 +33,7 @@ export class DataStudioService {
   }
   public get MermaidSvgId(): string { return 'mermaidSvgChart'; }
 
-  private readonly database$: Observable<string>;
+  private readonly database$: Observable<Exportable>;
   private readonly databaseName$: Observable<string>;
   private readonly status$: Observable<Status>;
   private readonly vscode = this.isInDataStudio() ? acquireVsCodeApi() : {
@@ -90,13 +91,13 @@ export class DataStudioService {
     });
   }
 
-  private buildSvg(markdown: string): Observable<string> {
-    return new Observable<string>(observer => {
+  private buildSvg(markdown: string): Observable<Exportable> {
+    return new Observable<Exportable>(observer => {
       try {
         mermaid.render(
           this.MermaidSvgId,
           markdown,
-          (svg) => observer.next(svg)
+          (s) => observer.next({ svg: s, mermaid: markdown })
         );
       } catch (error) {
         this.alert.showError({

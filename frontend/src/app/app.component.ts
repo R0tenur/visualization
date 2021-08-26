@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
 import { Status } from '../../../shared/models/status.enum';
 import { DataStudioService } from '../services/data-studio.service';
+import { Exportable } from './models/exportable.model';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +11,7 @@ import { DataStudioService } from '../services/data-studio.service';
 })
 export class AppComponent {
 
-  public get Database$(): Observable<string> {
+  public get Database$(): Observable<Exportable> {
     return this.dataStudioService.Database$;
   }
   constructor(public readonly dataStudioService: DataStudioService) { }
@@ -199,8 +199,8 @@ class EmployeeTerritories {
   public isNotInDataStudio(): boolean {
     return !document.getElementsByTagName('body')[0].hasAttribute('data-vscode-theme-name');
   }
-  public exportSvg(svg: string): void {
-    this.dataStudioService.sendMessage(svg);
+  public exportSvg(svg: string, markdown: string): void {
+    this.dataStudioService.sendMessage({ chart: svg, mermaid: markdown });
   }
 
   private delay(milliSeconds: number): Promise<void> {

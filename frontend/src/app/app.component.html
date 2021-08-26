@@ -2,8 +2,8 @@
 <app-status></app-status>
 <app-button *ngIf="isNotInDataStudio()" (clicked)="triggerFakeEvent()">Trigger event</app-button>
 <div *ngIf="Database$ | async as database">
-  <app-button (clicked)="exportSvg(database)">Export</app-button>
+  <app-button (clicked)="exportSvg(database.svg, database.mermaid)">Export</app-button>
 
   <h1 *ngIf="dataStudioService.DatabaseName$ | async as databaseName">{{databaseName}}</h1>
-  <app-mermaid-viewer [svg]="database"></app-mermaid-viewer>
+  <app-mermaid-viewer [svg]="database.svg"></app-mermaid-viewer>
 </div>
