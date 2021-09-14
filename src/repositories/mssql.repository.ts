@@ -106,59 +106,38 @@ export const listDatabases = async (
 
 const sysTableQuery = `
 SELECT
-    T.name as 'TABLE_NAME',
-    Columns.name as 'COLUMN_NAME',
-    (SELECT TOP 1
-        TAB2.NAME
-    FROM SYS.FOREIGN_KEY_COLUMNS fkc
-        INNER JOIN SYS.OBJECTS obj
-        ON OBJ.OBJECT_ID = fkc.constraint_object_id
-        INNER JOIN SYS.TABLES tab1
-        ON tab1.OBJECT_ID = fkc.parent_object_id
-        INNER JOIN sys.schemas sch
-        ON tab1.schema_id = sch.schema_id
-        INNER JOIN sys.columns col1
-        ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-        INNER JOIN sys.tables tab2
-        ON tab2.OBJECT_ID = fkc.referenced_object_id
-        INNER JOIN sys.columns col2
-        ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-    WHERE (col1.name != col2.NAME OR tab1.name != tab2.name) AND tab1.name = t.name AND col1.name = Columns.name) as REFERENCE_TO_TABLE,
-    (SELECT TOP 1
-        col2.name AS [referenced_column]
-    FROM SYS.FOREIGN_KEY_COLUMNS fkc
-        INNER JOIN SYS.OBJECTS obj
-        ON OBJ.OBJECT_ID = fkc.constraint_object_id
-        INNER JOIN SYS.TABLES tab1
-        ON tab1.OBJECT_ID = fkc.parent_object_id
-        INNER JOIN sys.schemas sch
-        ON tab1.schema_id = sch.schema_id
-        INNER JOIN sys.columns col1
-        ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-        INNER JOIN sys.tables tab2
-        ON tab2.OBJECT_ID = fkc.referenced_object_id
-        INNER JOIN sys.columns col2
-        ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-    WHERE (col1.name != col2.NAME OR tab1.name != tab2.name) AND tab1.name = t.name AND col1.name = Columns.name) as REFERENCE_COLUMN,
-    (SELECT TOP 1
-        OBJ.NAME
-    FROM SYS.FOREIGN_KEY_COLUMNS fkc
-        INNER JOIN SYS.OBJECTS obj
-        ON OBJ.OBJECT_ID = fkc.constraint_object_id
-        INNER JOIN SYS.TABLES tab1
-        ON tab1.OBJECT_ID = fkc.parent_object_id
-        INNER JOIN sys.schemas sch
-        ON tab1.schema_id = sch.schema_id
-        INNER JOIN sys.columns col1
-        ON col1.column_id = parent_column_id AND col1.object_id = tab1.object_id
-        INNER JOIN sys.tables tab2
-        ON tab2.OBJECT_ID = fkc.referenced_object_id
-        INNER JOIN sys.columns col2
-        ON col2.column_id = referenced_column_id AND col2.object_id = tab2.object_id
-    WHERE (col1.name != col2.NAME OR tab1.name != tab2.name) AND tab1.name = t.name AND col1.name = Columns.name) as FOREIGN_KEY
-
-FROM SYS.TABLES T
-    INNER JOIN SYS.COLUMNS Columns ON Columns.object_id = T.object_id
+    T.[name] AS TABLE_NAME,
+    Columns.[name] AS COLUMN_NAME,
+    FK.REFERENCE_TO_TABLE,
+    FK.REFERENCE_COLUMN,
+    FK.FOREIGN_KEY
+FROM sys.tables T
+    INNER JOIN sys.columns Columns ON Columns.[object_id] = T.[object_id]
+    LEFT OUTER JOIN
+    (
+        SELECT
+            tab1.[name] AS REFERENCE_FROM_TABLE,
+            tab2.[name] AS REFERENCE_TO_TABLE,
+            col1.[name] AS REFERENCE_FROM_COLUMN,
+            col2.[name] AS REFERENCE_COLUMN,
+            obj.[name] AS FOREIGN_KEY
+        FROM sys.FOREIGN_KEY_COLUMNS fkc
+            INNER JOIN sys.OBJECTS obj
+            ON obj.[object_id] = fkc.constraint_object_id
+            INNER JOIN sys.tables tab1
+            ON tab1.[object_id] = fkc.parent_object_id
+            INNER JOIN sys.schemas sch
+            ON tab1.[schema_id] = sch.[schema_id]
+            INNER JOIN sys.columns col1
+            ON col1.column_id = parent_column_id AND col1.[object_id] = tab1.[object_id]
+            INNER JOIN sys.tables tab2
+            ON tab2.[object_id] = fkc.referenced_object_id
+            INNER JOIN sys.columns col2
+            ON col2.column_id = referenced_column_id AND col2.[object_id] = tab2.[object_id]
+        WHERE (col1.[name] != col2.[name] OR tab1.[name] != tab2.[name])
+    ) FK ON
+        FK.REFERENCE_FROM_TABLE = t.[name] AND
+        FK.REFERENCE_FROM_COLUMN = Columns.[name];
 `;
 
 const informationsSchemaQuery = `
@@ -191,5 +170,4 @@ FROM INFORMATION_SCHEMA.TABLES T
         FK.REFERENCE_FROM_TABLE = T.TABLE_NAME AND
         FK.REFERENCE_FROM_COLUMN = Columns.COLUMN_NAME
  WHERE T.TABLE_TYPE='BASE TABLE';
-
 `;
