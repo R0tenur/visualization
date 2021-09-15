@@ -11,3 +11,14 @@ Double tap your db and press "Schema Visualization" on the dashboard.
 
 ![Example of dashboard](https://raw.githubusercontent.com/R0tenur/visualization/master/images/example.png)
 
+## Installation
+Navigate to the [Releases page](https://github.com/R0tenur/visualization/releases) and download the most recent .vsix
+
+Install it by pressing the meatball menu and select "Install from VSIX..."
+![Installation guidelines](https://raw.githubusercontent.com/R0tenur/visualization/master/images/installation.png)
+
+## Found a bug or wanting additional features?
+Go to the [Issue page](https://github.com/R0tenur/visualization/issues)
+
+## Building and running the project locally
+Go to the [Docs page](docs/docs.md)
