@@ -30,7 +30,11 @@ class ${table.Name} {
     tableStrings.push(tableString);
   });
   if (tableStrings.length === 0) {
-    return null;
+    var err = new Error("Could not build mermaid from db response");
+    err.stack = `Db-response:
+    ${JSON.stringify(tables)}`;
+
+    throw err;
   }
   return `classDiagram
       ${tableStrings.join('')}

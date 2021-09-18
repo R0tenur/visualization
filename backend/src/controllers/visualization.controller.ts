@@ -16,23 +16,9 @@ export const VisualizationController = () => {
         async (webview: DashboardWebview) => {
             webview.html = counterHtml;
             webview.onMessage(e => recivedMessage(e));
+
             if (webview.connection.options.database) {
-                webview.postMessage({
-                    status: Status.GettingTableData,
-                });
-                const database = await getMssqlDbSchema(
-                    webview.connection.connectionId,
-                    webview.connection.options.database);
-                webview.postMessage({
-                    status: Status.BuildingChart,
-                    errors: database.errors,
-                    databaseRaw: database.tables
-                });
-
-                const chart = chartBuilder(database.tables);
-
-                showResult(webview, chart, database);
-
+                await getMermaidForDb(webview);
             } else {
                 webview.postMessage({
                     status: Status.NoDatabase,
@@ -40,6 +26,26 @@ export const VisualizationController = () => {
             }
         }
     );
+};
+
+const getMermaidForDb = async (webview: DashboardWebview) => {
+    webview.postMessage({
+        status: Status.GettingTableData,
+    });
+    try {
+        const database = await getMssqlDbSchema(
+            webview.connection.connectionId,
+            webview.connection.options.database);
+        webview.postMessage({
+            status: Status.BuildingChart,
+            databaseRaw: database.tables
+        });
+        const chart = chartBuilder(database.tables);
+
+        showResult(webview, chart, database);
+    } catch (error) {
+        showError(webview, error);
+    }
 };
 
 const showResult = (webview: DashboardWebview, chart: string, database: Database) => {
@@ -54,11 +60,16 @@ const showResult = (webview: DashboardWebview, chart: string, database: Database
     } else {
         webview.postMessage({
             status: Status.Error,
-            errors: ['Could not build chart from the recived data'],
+            errors: database.errors,
             databaseRaw: database.tables
         });
     }
 };
+const showError = (webview: DashboardWebview, error: Error) => webview.postMessage({
+    status: Status.Error,
+    errors: [error.message],
+    databaseRaw: error.stack
+});
 const recivedMessage = async (e: any) => {
     const selected = await window.showQuickPick([...['svg', 'md']]);
     let data = e.data;
