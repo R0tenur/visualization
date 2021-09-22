@@ -1,17 +1,18 @@
-import { connection, dataprotocol, DataProviderType, QueryProvider, SimpleExecuteResult } from "azdata";
+import { connection, ConnectionProvider, dataprotocol, DataProviderType, QueryProvider, SimpleExecuteResult } from "azdata";
 import { Provider } from "../models/provider.enum";
 
 
-export const runQuery = <T>(provider: Provider, connectionId: string, query: string): Promise<T[]> => new Promise((resolve, reject) =>
-    connection.getUriForConnection(connectionId).then(connectionUri => {
-        const queryProvider: QueryProvider = dataprotocol.getProvider(provider, DataProviderType.QueryProvider);
+export const runQuery = async <T>(provider: Provider, connectionId: string, database: string, query: string): Promise<T[]> => {
 
-        queryProvider.runQueryAndReturn(connectionUri, query)
-            .then(
-                result => resolve(mapResult(result)),
-                err => reject(err)
-            );
-    }));
+    const connectionUri = await connection.getUriForConnection(connectionId);
+
+    const connectionProvider: ConnectionProvider = dataprotocol.getProvider(provider, DataProviderType.ConnectionProvider);
+    await connectionProvider.changeDatabase(connectionUri, database);
+
+    const queryProvider: QueryProvider = dataprotocol.getProvider(provider, DataProviderType.QueryProvider);
+    const dbResult = await toPromise(queryProvider.runQueryAndReturn(connectionUri, query));
+    return mapResult(dbResult);
+};
 
 const mapResult = <T>(result: SimpleExecuteResult): T[] => result.rows.map(element => {
     const item = {};
@@ -22,3 +23,7 @@ const mapResult = <T>(result: SimpleExecuteResult): T[] => result.rows.map(eleme
 });
 
 const undefinedOrValue = (value: string) => value !== 'NULL' ? value : undefined;
+const toPromise = <T>(t: Thenable<T>): Promise<T> => new Promise((resolve, reject) => t.then(
+    result => resolve(result),
+    err => reject(err)
+))

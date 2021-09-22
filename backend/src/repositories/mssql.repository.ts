@@ -21,7 +21,12 @@ export const getMssqlDbSchema = async (
     errors: []
   } as Database;
 
-  let dbEntry = await runQuery<DbResponse>(Provider.MSSQL, connectionId, informationsSchemaQuery(databaseName));
+  let dbEntry = await runQuery<DbResponse>(
+    Provider.MSSQL,
+    connectionId,
+    databaseName,
+    informationsSchemaQuery);
+  
   db.tables = toTables(dbEntry);
   return db;
 };
@@ -54,9 +59,10 @@ const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
 
 
 export const listDatabases = async (
-  connectionId: string
+  connectionId: string,
+  database: string,
 ): Promise<string[]> => {
-  return await runQuery<string>(Provider.MSSQL, connectionId, databaseListQuery);
+  return await runQuery<string>(Provider.MSSQL, connectionId, database, databaseListQuery);
 };
 
 const databaseListQuery =
@@ -65,8 +71,7 @@ const databaseListQuery =
   `;
 
 
-const informationsSchemaQuery = (dbName: string) => `
-USE ${dbName};
+const informationsSchemaQuery = `
 SELECT
     T.TABLE_NAME,
     Columns.COLUMN_NAME,
