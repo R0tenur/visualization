@@ -3,5 +3,6 @@ export enum Status {
     BuildingChart = 'BUILDING_CHART',
     Complete = 'COMPLETE',
     NoDatabase = 'NO_DATABASE',
+    GeneratingSvg = 'SVG',
     Error = 'ERROR',
 };

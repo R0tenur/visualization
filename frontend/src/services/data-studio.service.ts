@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, Observable } from 'rxjs';
+import { concat, fromEvent, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { Status } from '../../../shared/models/status.enum';
 import mermaid from 'mermaid';
@@ -39,6 +39,7 @@ export class DataStudioService {
   private readonly vscode = this.isInDataStudio() ? acquireVsCodeApi() : {
     postMessage: (message: any) => console.log('posted', message),
   };
+  private readonly clientStatus$ = new Subject<string>();
   constructor(private readonly alert: AlertService) {
 
     this.initializeMermaid();
@@ -54,9 +55,10 @@ export class DataStudioService {
       })
     );
 
-    this.status$ = azEvent$.pipe(
-      map(e => e.data?.status)
-    );
+    this.status$ = concat(azEvent$.pipe(
+      map(e => e.data?.status),
+
+    ));
     this.database$ = azEvent$.pipe(
       filter(event => event.data?.status === Status.Complete),
       map(event => event.data?.chart),
@@ -87,7 +89,7 @@ export class DataStudioService {
   private initializeMermaid(): void {
     mermaid.initialize({
       startOnLoad: false,
-      maxTextSize: 90000,
+      maxTextSize: 1000000,
       theme: this.isDarkMode() ? 'dark' : 'neutral'
     } as any);
   }
@@ -98,15 +100,20 @@ export class DataStudioService {
         mermaid.render(
           this.MermaidSvgId,
           markdown,
-          (s) => observer.next({ svg: s, mermaid: markdown })
+          (s) => {
+            observer.next({ svg: s, mermaid: markdown });
+            this.clientStatus$.next(Status.Complete);
+          }
         );
+        this.clientStatus$.next(Status.GeneratingSvg);
       } catch (error) {
+        this.clientStatus$.next(Status.Error);
         this.alert.showError({
           status: Status.Complete,
           errors: [
             'Mermaid failed to parse data',
           ],
-          rawData: JSON.stringify(error)
+          rawData: JSON.stringify({ error, markdown })
         });
       }
     });

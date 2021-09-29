@@ -6,8 +6,13 @@
     </div>
 
     <div class="w-100" *ngSwitchCase="Status.BuildingChart">
-          <ng-container *ngTemplateOutlet="spinner"></ng-container>
-          <div class="center">Building your chart...</div>
+      <ng-container *ngTemplateOutlet="spinner"></ng-container>
+      <div class="center">Building your chart...</div>
+    </div>
+
+    <div class="w-100" *ngSwitchCase="Status.GeneratingSvg">
+      <ng-container *ngTemplateOutlet="spinner"></ng-container>
+      <div class="center">Generating svg..</div>
     </div>
   </div>
 </div>

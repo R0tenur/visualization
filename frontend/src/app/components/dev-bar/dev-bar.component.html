@@ -1,0 +1,4 @@
+<div *ngIf="!azData.isInDataStudio()">
+  <input type="number" [(ngModel)]="numberOfTables" />
+  <app-button (clicked)="triggerFakeEvent()">Generate fake database</app-button>
+</div>

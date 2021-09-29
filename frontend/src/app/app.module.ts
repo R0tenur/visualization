@@ -7,6 +7,7 @@ import { MermaidViewerComponent } from './components/mermaid-viewer/mermaid-view
 import { ButtonComponent } from './components/button/button.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { StatusComponent } from './components/status/status.component';
+import { DevBarComponent } from './components/dev-bar/dev-bar.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { StatusComponent } from './components/status/status.component';
     ButtonComponent,
     AlertComponent,
     StatusComponent,
+    DevBarComponent,
   ],
   imports: [
     BrowserModule,
