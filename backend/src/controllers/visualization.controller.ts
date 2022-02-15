@@ -68,7 +68,7 @@ const showResult = (webview: DashboardWebview, chart: string, database: Database
 const showError = (webview: DashboardWebview, error: Error) => webview.postMessage({
     status: Status.Error,
     errors: [error.message],
-    databaseRaw: error.stack
+    rawData: error.stack
 });
 const recivedMessage = async (e: any) => {
     const selected = await window.showQuickPick([...['svg', 'md']]);

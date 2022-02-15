@@ -14,6 +14,7 @@ interface AzData {
   status: Status;
   databaseName: string;
   errors: string[];
+  rawData: string;
 }
 interface Event {
   data: AzData;
@@ -49,7 +50,7 @@ export class DataStudioService {
           this.alert.showError({
             status: event.data.status,
             errors: event.data.errors,
-            rawData: JSON.stringify(event.data.errors)
+            rawData: JSON.stringify(event.data.rawData)
           });
         }
       })

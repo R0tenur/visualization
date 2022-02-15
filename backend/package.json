@@ -2,7 +2,7 @@
   "name": "schema-visualization",
   "displayName": "Schema Visualization",
   "description": "Visualization of databases",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "publisher": "R0tenur",
   "license": "MIT",
   "icon": "logo.png",
@@ -40,7 +40,6 @@
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install && node ./node_modules/azdata/bin/install",
     "proposedapi": "node installTypings.js",
     "pack": "vsce package",
     "copy-web": "cp -R ./src/web ./out",
@@ -49,13 +48,15 @@
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/node": "^13.9.3",
-    "azdata": "1.0.0",
+    "@types/vscode": "^1.63.0",
+    "@types/azdata": "1.33.0",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.4",
     "tslint": "^6.1.0",
     "typescript": "^3.8.3",
     "vsce": "^1.71.0",
-    "vscode": "^1.1.36"
+    "vscode-test": "^1.6.1",
+    "azdata-test": "^1.2.0"
   },
   "dependencies": {
     "svg-to-pdfkit": "^0.1.8"
