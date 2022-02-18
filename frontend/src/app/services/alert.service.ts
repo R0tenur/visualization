@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { ChartError } from '../app/models/error.model';
+import { ChartError } from '../models/error.model';
 
 @Injectable({
   providedIn: 'root'

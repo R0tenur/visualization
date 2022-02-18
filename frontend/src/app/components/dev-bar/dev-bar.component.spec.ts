@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppTestingModule } from '../../app-testing.module';
 
 import { DevBarComponent } from './dev-bar.component';
 
@@ -8,7 +9,8 @@ describe('DevBarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DevBarComponent ]
+      declarations: [DevBarComponent],
+      imports: [AppTestingModule],
     })
     .compileComponents();
   });

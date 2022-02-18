@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { concat, fromEvent, Observable, Subject } from 'rxjs';
+import { concat, fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { Status } from '../../../shared/models/status.enum';
+import { Status } from '../../../../shared/models/status.enum';
 import mermaid from 'mermaid';
 import { AlertService } from './alert.service';
-import { Exportable } from '../app/models/exportable.model';
+import { Exportable } from '../models/exportable.model';
 declare const acquireVsCodeApi: () => ({
   postMessage: (message: any) => void;
 });
@@ -32,11 +32,15 @@ export class DataStudioService {
   public get Status$(): Observable<string> {
     return this.status$;
   }
+  public get Markdown$(): Observable<string> {
+    return this.markdown$.asObservable();
+  }
   public get MermaidSvgId(): string { return 'mermaidSvgChart'; }
 
   private readonly database$: Observable<Exportable>;
   private readonly databaseName$: Observable<string>;
   private readonly status$: Observable<Status>;
+  private readonly markdown$ = new ReplaySubject<string>();
   private readonly vscode = this.isInDataStudio() ? acquireVsCodeApi() : {
     postMessage: (message: any) => console.log('posted', message),
   };
@@ -60,11 +64,14 @@ export class DataStudioService {
       map(e => e.data?.status),
 
     ));
+
     this.database$ = azEvent$.pipe(
       filter(event => event.data?.status === Status.Complete),
       map(event => event.data?.chart),
       switchMap(r => this.buildSvg(r))
     );
+
+
 
     this.databaseName$ = azEvent$.pipe(
       filter(event => event.data?.status === Status.Complete),
@@ -78,7 +85,7 @@ export class DataStudioService {
     return document.getElementsByTagName('body')[0].getAttribute('data-vscode-theme-kind') === 'vscode-dark';
   }
 
-  public sendMessage(message: any): void {
+  public saveCommand(message: any): void {
     this.vscode.postMessage({
       ...{
         command: 'save',
@@ -96,6 +103,7 @@ export class DataStudioService {
   }
 
   private buildSvg(markdown: string): Observable<Exportable> {
+    this.markdown$.next(markdown);
     return new Observable<Exportable>(observer => {
       try {
         mermaid.render(
@@ -107,14 +115,15 @@ export class DataStudioService {
           }
         );
         this.clientStatus$.next(Status.GeneratingSvg);
-      } catch (error) {
+      } catch (e: any) {
         this.clientStatus$.next(Status.Error);
         this.alert.showError({
           status: Status.Complete,
           errors: [
+            e.message,
             'Mermaid failed to parse data',
           ],
-          rawData: JSON.stringify({ error, markdown })
+          rawData: JSON.stringify({ message: e.message, stack: e.stack, markdown })
         });
       }
     });

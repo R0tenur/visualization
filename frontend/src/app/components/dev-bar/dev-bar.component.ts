@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Status } from '../../../../../shared/models/status.enum';
-import { DataStudioService } from '../../../services/data-studio.service';
-import { FakeDbService } from '../../../services/fake-db.service';
+import { DataStudioService } from '../../services/data-studio.service';
+import { FakeDbService } from '../../services/fake-db.service';
 
 @Component({
   selector: 'app-dev-bar',

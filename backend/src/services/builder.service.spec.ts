@@ -29,7 +29,6 @@ describe('chartBuilder', () => {
     ];
 
     const chart = chartBuilder(tablesWithMultiple);
-    console.log(chart);
     expect(numberOfTimesStringInString(chart, columnName)).toBe(1);
   });
 });

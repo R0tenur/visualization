@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DataStudioService } from '../services/data-studio.service';
+import { DataStudioService } from './services/data-studio.service';
 import { Exportable } from './models/exportable.model';
 
 @Component({
@@ -17,6 +17,6 @@ export class AppComponent {
     public readonly dataStudioService: DataStudioService) { }
 
   public exportSvg(svg: string, markdown: string): void {
-    this.dataStudioService.sendMessage({ chart: svg, mermaid: markdown });
+    this.dataStudioService.saveCommand({ chart: svg, mermaid: markdown });
   }
 }

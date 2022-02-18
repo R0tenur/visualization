@@ -1,26 +1,38 @@
-<div *ngIf="alertService.Alert$ | async as alert" class="alert">
-      <h4 class="title">
-        An error occured!
-      </h4>
-    <h4 class="title">
-      Status: {{alert.status}}
-    </h4>
-    <ul>
-      <li *ngFor="let er of alert.errors">{{er}}</li>
-    </ul>
+<div id="alert" *ngIf="alertService.Alert$ | async as alert" class="alert">
+  <h4 class="title">
+    An error occured!
+  </h4>
+  <h4 class="title">
+    Status: {{alert.status}}
+  </h4>
+  <ul>
+    <li *ngFor="let er of alert.errors">{{er}}</li>
+  </ul>
 
-    <h4 class="title">
-      Raw data:
-    </h4>
+  <div id="textSizeExceededError" *ngIf="errorIsTextSizeExceeded(alert)">
+    <h4 class="title">This is a known error.</h4>
     <p>
-      {{alert.rawData | json}}
+      You could export the mermaid markdown and try to render the diagram on your own. (search for:
+      "mermaid cli")<br>
+      In the meantime we are working to fix the issue.
     </p>
+    <div *ngIf="az.Markdown$ | async as markdown" id="textSizeExceededErrorBtn">
+      <app-button (clicked)="exportMarkdown(markdown)">Export mermaid
+      </app-button>
+    </div>
+  </div>
+  <h4 class="title">
+    Raw data:
+  </h4>
+  <p>
+    {{alert.rawData | json}}
+  </p>
 
-    <h4 class="title">
-      Found a bug?
-    </h4>
-    <p>
-      Report it here: https://github.com/R0tenur/visualization/issues
-    </p>
-    <app-button (clicked)="alertService.dismissError()">Dismiss</app-button>
+  <h4 class="title">
+    Found a bug?
+  </h4>
+  <p>
+    Report it here: https://github.com/R0tenur/visualization/issues
+  </p>
+  <app-button (clicked)="alertService.dismissError()">Dismiss</app-button>
 </div>

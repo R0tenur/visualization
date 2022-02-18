@@ -75,9 +75,6 @@ export class MermaidViewerComponent implements OnInit, AfterViewInit, OnDestroy 
     document.getElementById(this.mermaidSvgId)?.removeAttribute('height');
     document.getElementById(this.mermaidSvgId)?.removeAttribute('width');
     setTimeout(() => {
-      console.log(document.getElementById(this.mermaidSvgId));
-
-
       this.viewBoxSubscription = this.viewBox.asObservable().subscribe(() => {
         document.getElementById(this.mermaidSvgId)?.setAttribute('viewBox', this.ViewBoxString);
       });
