@@ -1,4 +1,5 @@
 ![GitHub All Releases](https://img.shields.io/github/downloads/r0tenur/visualization/total)
+[![codecov](https://codecov.io/gh/R0tenur/visualization/branch/master/graph/badge.svg?token=COOVEK6DW1)](https://codecov.io/gh/R0tenur/visualization)
 # Schema Visualization
 
 Visulizes databases in "Azure data studio" using mermaid.js
