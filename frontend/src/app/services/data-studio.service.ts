@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { concat, fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { Status } from '../../../../shared/models/status.enum';
-import mermaid from 'mermaid';
 import { AlertService } from './alert.service';
 import { Exportable } from '../models/exportable.model';
+import { WINDOW } from './window.token';
+import { MERMAID } from './mermaid.token';
+import { Mermaid } from 'mermaid';
 declare const acquireVsCodeApi: () => ({
   postMessage: (message: any) => void;
 });
@@ -45,10 +47,13 @@ export class DataStudioService {
     postMessage: (message: any) => console.log('posted', message),
   };
   private readonly clientStatus$ = new Subject<string>();
-  constructor(private readonly alert: AlertService) {
+  constructor(
+    @Inject(WINDOW) private readonly window: Window,
+    @Inject(MERMAID) private readonly mermaid: Mermaid,
+    private readonly alert: AlertService) {
 
     this.initializeMermaid();
-    const azEvent$ = fromEvent<Event>(window, 'message').pipe(
+    const azEvent$ = fromEvent<Event>(this.window, 'message').pipe(
       tap(event => {
         if (event.data.status === Status.Error) {
           this.alert.showError({
@@ -79,10 +84,10 @@ export class DataStudioService {
   }
 
   public isInDataStudio(): boolean {
-    return document.getElementsByTagName('body')[0].hasAttribute('data-vscode-theme-name');
+    return this.window.document.getElementsByTagName('body')[0].hasAttribute('data-vscode-theme-name');
   }
   public isDarkMode(): boolean {
-    return document.getElementsByTagName('body')[0].getAttribute('data-vscode-theme-kind') === 'vscode-dark';
+    return this.window.document.getElementsByTagName('body')[0].getAttribute('data-vscode-theme-kind') === 'vscode-dark';
   }
 
   public saveCommand(message: any): void {
@@ -95,7 +100,7 @@ export class DataStudioService {
   }
 
   private initializeMermaid(): void {
-    mermaid.initialize({
+    this.mermaid.initialize({
       startOnLoad: false,
       maxTextSize: 1000000,
       theme: this.isDarkMode() ? 'dark' : 'neutral'
@@ -106,7 +111,7 @@ export class DataStudioService {
     this.markdown$.next(markdown);
     return new Observable<Exportable>(observer => {
       try {
-        mermaid.render(
+        this.mermaid.render(
           this.MermaidSvgId,
           markdown,
           (s) => {

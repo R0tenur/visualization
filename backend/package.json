@@ -42,8 +42,7 @@
     "watch": "tsc -watch -p ./",
     "proposedapi": "node installTypings.js",
     "pack": "vsce package",
-    "copy-web": "cp -R ./src/web ./out",
-    "test": "jest"
+    "test": "jest --config=jest.config.js"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

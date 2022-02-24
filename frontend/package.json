@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --prod --single-bundle",
-    "test": "ng test --browsers=ChromeHeadless --code-coverage",
+    "test": "ng test --browsers=ChromeHeadless --watch=false --code-coverage",
+    "test:watch": "ng test --browsers=ChromeHeadless --code-coverage",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "postbuild": "html-inline -i ./dist/frontend/index.html -o ../backend/out/index.html"
   },
   "private": true,

@@ -1,3 +1,4 @@
+/* istanbul ignore */
 import { Injectable } from '@angular/core';
 
 @Injectable({

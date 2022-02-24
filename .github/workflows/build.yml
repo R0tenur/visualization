@@ -2,9 +2,12 @@ name: CI
 
 on:
   push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+  create:
     tags:
-      - 'v*'  
-jobs:
+      - v*jobs:
   build:
     runs-on: windows-latest
     steps:
@@ -15,11 +18,23 @@ jobs:
       run: cd frontend && yarn
     - name: Build frontend
       run: cd frontend && yarn run build
+    - name: Test
+      run: yarn run test  
+    - name: Publish code coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: "**/cobertura-coverage.xml"
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+        verbose: true
     - name: Compile
       run: cd backend && yarn run compile
     - name: Pack 
       run: cd backend && yarn run pack
     - name: Create Release
+      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
       id: create_release
       uses: actions/create-release@v1.0.0
       env:
@@ -30,6 +45,7 @@ jobs:
         draft: false
         prerelease: false
     - name: Upload Release Asset
+      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
       uses: svenstaro/upload-release-action@v1-release
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
