@@ -15,8 +15,7 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
           `;
         if (column.ReferenceTable) {
           tableRelations.push(
-            `${table.Name} --|> ${column.ReferenceTable}: ${column.ReferenceColumn}
-            `
+            `${table.Name} --|> ${column.ReferenceTable}: ${column.ReferenceColumn}\n`
           );
         }
       }
@@ -25,8 +24,7 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
     let tableString = `
 class ${table.Name} {
     ${columString}
-}
-        `;
+}`;
     tableStrings.push(tableString);
   });
   if (tableStrings.length === 0) {
@@ -38,8 +36,7 @@ class ${table.Name} {
   }
   return `classDiagram
       ${tableStrings.join('')}
-      ${tableRelations.join('')}
-      `;
+      ${tableRelations.join('')}`;
 
 };
 

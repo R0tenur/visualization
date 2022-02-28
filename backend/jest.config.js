@@ -10,4 +10,10 @@ module.exports = {
   coverageReporters: ["html", "text", "text-summary", "cobertura"],
   coverageDirectory: './coverage',
   testMatch: ["**/*.spec.ts"],
+  "transform": {
+    "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+  },
+  "transformIgnorePatterns": [
+    "node_modules/(?!variables/.*)"
+  ]
 };
