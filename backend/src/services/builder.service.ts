@@ -5,24 +5,25 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
   const tableStrings: string[] = [];
   const tableRelations: string[] = [];
 
-  tables.forEach((table: any) => {
+  tables.forEach((table: DatabaseTable) => {
     const columnNames: string[] = [];
     let columString = '';
-    table.Columns.forEach((column: DatabaseColumn) => {
-      if (!columnNames.find(x => x === column.Name)) {
-        columnNames.push(column.Name);
-        columString += `${column.Name}
+    table.columns.forEach((column: DatabaseColumn) => {
+      if (!columnNames.find(x => x === column.name)) {
+        columnNames.push(column.name);
+        columString += `${column.name}
           `;
-        if (column.ReferenceTable) {
+        if (column.referenceTable) {
           tableRelations.push(
-            `${table.Name} --|> ${column.ReferenceTable}: ${column.ReferenceColumn}\n`
+            `${table.schema}_${table.name} --|> ${column.referenceTableSchema}_${column.referenceTable}: ${column.referenceColumn}\n`
           );
         }
       }
 
     });
+
     let tableString = `
-class ${table.Name} {
+class ${table.schema}_${table.name} {
     ${columString}
 }`;
     tableStrings.push(tableString);

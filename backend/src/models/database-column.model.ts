@@ -1,7 +1,8 @@
 /* istanbul ignore file */
 export interface DatabaseColumn {
-    Name: string;
-    ReferenceColumn: string;
-    ReferenceTable: string;
-    ForeignKey: string;
+    name: string;
+    referenceColumn: string;
+    referenceTable: string;
+    referenceTableSchema: string;
+    foreignKey: string;
 }

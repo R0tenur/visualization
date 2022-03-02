@@ -3,12 +3,14 @@ import { chartBuilder } from "./builder.service";
 
 describe('chartBuilder', () => {
   const tableName = 'dummyTable';
+  const tableSchema = 'dummyTableSchema';
   const columnName = 'dummyColumn';
 
   const anotherTableName = 'anotherDummyTable';
+  const anotherTableSchema = 'anotherDummySchema';
   const anotherColumnName = 'anotherDummyColumn';
-  it('throws error when no db-respone', () => {
 
+  it('throws error when no db-respone', () => {
     // Act
     const err = () => chartBuilder([]);
 
@@ -20,14 +22,15 @@ describe('chartBuilder', () => {
     // arrange
     const tablesWithMultiple: DatabaseTable[] = [
       {
-        Name: tableName,
-        Columns: [
+        name: tableName,
+        schema: tableSchema,
+        columns: [
           {
-            Name: columnName,
+            name: columnName,
             ...emptyRelation
           },
           {
-            Name: columnName,
+            name: columnName,
             ...emptyRelation
           },
         ],
@@ -41,30 +44,33 @@ describe('chartBuilder', () => {
     expect(numberOfTimesStringInString(chart, columnName)).toBe(1);
   });
 
-  it('builds chart with uniqe columns', () => {
+  it('builds chart with relations', () => {
     // arrange
     const tablesWithMultiple: DatabaseTable[] = [
       {
-        Name: tableName,
-        Columns: [
+        name: tableName,
+        schema: tableSchema,
+        columns: [
           {
-            Name: columnName,
-            ReferenceColumn: anotherColumnName,
-            ReferenceTable: anotherTableName,
-            ForeignKey: 'theKey'
+            name: columnName,
+            referenceColumn: anotherColumnName,
+            referenceTable: anotherTableName,
+            referenceTableSchema: anotherTableSchema,
+            foreignKey: 'theKey'
 
           },
         ],
       },
       {
-        Name: anotherTableName,
-        Columns: [
+        name: anotherTableName,
+        schema: anotherTableSchema,
+        columns: [
           {
-            Name: columnName,
+            name: columnName,
             ...emptyRelation
           },
           {
-            Name: anotherColumnName,
+            name: anotherColumnName,
             ...emptyRelation
           },
         ],
@@ -73,16 +79,16 @@ describe('chartBuilder', () => {
 
     const expected = `classDiagram
       
-class dummyTable {
-    dummyColumn
+class ${tableSchema}_${tableName} {
+    ${columnName}
           
 }
-class anotherDummyTable {
-    dummyColumn
-          anotherDummyColumn
+class ${anotherTableSchema}_${anotherTableName} {
+    ${columnName}
+          ${anotherColumnName}
           
 }
-      dummyTable --|> anotherDummyTable: anotherDummyColumn
+      ${tableSchema}_${tableName} --|> ${anotherTableSchema}_${anotherTableName}: ${anotherColumnName}
 `;
 
     // Act
@@ -95,8 +101,9 @@ class anotherDummyTable {
 
 
 const emptyRelation = {
-  ReferenceColumn: '',
-  ReferenceTable: '',
-  ForeignKey: ''
+  referenceColumn: '',
+  referenceTable: '',
+  referenceTableSchema: '',
+  foreignKey: ''
 };
 const numberOfTimesStringInString = (string: string, word: string) => string.split(word).length - 1;
