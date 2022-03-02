@@ -1,18 +1,9 @@
 import { Database } from "../models/database.model";
 import { DatabaseTable } from "../models/database-table.model";
-import { runQuery } from "./base.repository";
+import * as base from "./base.repository";
 import { Provider } from "../models/provider.enum";
+import { DbResponse } from "../models/db-response.model";
 
-interface DbResponse {
-  TABLE_NAME: string;
-  TABLE_SCHEMA: string;
-  COLUMN_NAME: string;
-  REFERENCE_TO_TABLE: string;
-  REFERENCE_COLUMN: string;
-  REFERENCE_TO_TABLE_SCHEMA: string;
-  FOREIGN_KEY: string;
-
-}
 
 export const getMssqlDbSchema = async (
   connectionId: string,
@@ -23,7 +14,7 @@ export const getMssqlDbSchema = async (
     errors: []
   } as Database;
 
-  let dbEntry = await runQuery<DbResponse>(
+  let dbEntry = await base.runQuery<DbResponse>(
     Provider.MSSQL,
     connectionId,
     databaseName,
@@ -66,7 +57,7 @@ export const listDatabases = async (
   connectionId: string,
   database: string,
 ): Promise<string[]> => {
-  return await runQuery<string>(Provider.MSSQL, connectionId, database, databaseListQuery);
+  return await base.runQuery<string>(Provider.MSSQL, connectionId, database, databaseListQuery);
 };
 
 const databaseListQuery =
