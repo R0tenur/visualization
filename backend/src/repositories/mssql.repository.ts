@@ -5,9 +5,11 @@ import { Provider } from "../models/provider.enum";
 
 interface DbResponse {
   TABLE_NAME: string;
+  TABLE_SCHEMA: string;
   COLUMN_NAME: string;
   REFERENCE_TO_TABLE: string;
   REFERENCE_COLUMN: string;
+  REFERENCE_TO_TABLE_SCHEMA: string;
   FOREIGN_KEY: string;
 
 }
@@ -36,19 +38,21 @@ const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
   for (let index = 0; index < dbResult.length; index++) {
     const element = dbResult[index];
     const columnToAdd = {
-      Name: element.COLUMN_NAME,
-      ReferenceColumn: element.REFERENCE_COLUMN,
-      ReferenceTable: element.REFERENCE_TO_TABLE,
-      ForeignKey: element.FOREIGN_KEY,
+      name: element.COLUMN_NAME,
+      referenceColumn: element.REFERENCE_COLUMN,
+      referenceTable: element.REFERENCE_TO_TABLE,
+      referenceTableSchema: element.REFERENCE_TO_TABLE_SCHEMA,
+      foreignKey: element.FOREIGN_KEY,
     };
-    const existing = result.find(t => t.Name === element.TABLE_NAME);
+    const existing = result.find(t => t.name === element.TABLE_NAME && t.schema === element.TABLE_SCHEMA);
 
     if (existing) {
-      existing.Columns.push(columnToAdd);
+      existing.columns.push(columnToAdd);
     } else {
       result.push({
-        Name: element.TABLE_NAME,
-        Columns: [
+        name: element.TABLE_NAME,
+        schema: element.TABLE_SCHEMA,
+        columns: [
           columnToAdd
         ]
       });
@@ -74,16 +78,19 @@ const databaseListQuery =
 const informationsSchemaQuery = `
 SELECT
     T.TABLE_NAME,
+    T.TABLE_SCHEMA,
     Columns.COLUMN_NAME,
     FK.REFERENCE_TO_TABLE,
+    FK.REFERENCE_TO_TABLE_SCHEMA,
     FK.REFERENCE_COLUMN,
     FK.FOREIGN_KEY
 FROM INFORMATION_SCHEMA.TABLES T
-    INNER JOIN INFORMATION_SCHEMA.COLUMNS Columns ON Columns.TABLE_NAME = T.TABLE_NAME
+    INNER JOIN INFORMATION_SCHEMA.COLUMNS Columns ON Columns.TABLE_NAME = T.TABLE_NAME AND Columns.TABLE_SCHEMA = T.TABLE_SCHEMA
     LEFT OUTER JOIN (
         SELECT
             KCU1.TABLE_NAME AS REFERENCE_FROM_TABLE,
             KCU2.TABLE_NAME AS REFERENCE_TO_TABLE,
+            KCU2.TABLE_SCHEMA AS REFERENCE_TO_TABLE_SCHEMA,
             KCU1.COLUMN_NAME AS REFERENCE_FROM_COLUMN,
             KCU2.COLUMN_NAME AS REFERENCE_COLUMN,
             KCU1.CONSTRAINT_NAME AS 'FOREIGN_KEY'
