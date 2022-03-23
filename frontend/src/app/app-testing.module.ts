@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ButtonComponent } from './components/button/button.component';
 import { MERMAID } from './services/mermaid.token';
@@ -41,9 +42,10 @@ const fakeMermaidProvider = ({
   ],
   imports: [
     FormsModule,
+    RouterTestingModule.withRoutes([]),
   ],
   providers: [fakeWindowProvider],
-  exports: [ButtonComponent, FormsModule]
+  exports: [ButtonComponent, FormsModule, RouterTestingModule]
 })
 export class AppTestingModule { }
 

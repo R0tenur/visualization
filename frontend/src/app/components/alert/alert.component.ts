@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { ChartError } from '../../models/error.model';
-import { AlertService } from '../../services/alert.service';
+import { Component, Inject } from '@angular/core';
+import { ChartError, ChartErrorKey } from '../../models/error.model';
 import { DataStudioService } from '../../services/data-studio.service';
+import { StateInjector } from '../../services/state.token';
+import { State} from '../../state/state';
 
 @Component({
   selector: 'app-alert',
@@ -9,7 +10,10 @@ import { DataStudioService } from '../../services/data-studio.service';
   styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent {
-  constructor(public readonly alertService: AlertService, public readonly az: DataStudioService) {}
+  constructor(
+    @Inject(StateInjector(ChartErrorKey)) public readonly state: State<ChartError>,
+    public readonly az: DataStudioService) { }
+
   public exportMarkdown(markdown: string): void {
     this.az.saveCommand({ mermaid: markdown });
   }

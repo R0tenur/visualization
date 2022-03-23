@@ -2,11 +2,13 @@ import { Inject, Injectable } from '@angular/core';
 import { concat, fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { Status } from '../../../../shared/models/status.enum';
-import { AlertService } from './alert.service';
 import { Exportable } from '../models/exportable.model';
 import { WINDOW } from './window.token';
 import { MERMAID } from './mermaid.token';
 import { Mermaid } from 'mermaid';
+import { State } from '../state/state';
+import { ChartError, ChartErrorKey } from '../models/error.model';
+import { StateInjector } from './state.token';
 declare const acquireVsCodeApi: () => ({
   postMessage: (message: any) => void;
 });
@@ -50,13 +52,13 @@ export class DataStudioService {
   constructor(
     @Inject(WINDOW) private readonly window: Window,
     @Inject(MERMAID) private readonly mermaid: Mermaid,
-    private readonly alert: AlertService) {
+    @Inject(StateInjector(ChartErrorKey)) public readonly alert: State<ChartError>) {
 
     this.initializeMermaid();
     const azEvent$ = fromEvent<Event>(this.window, 'message').pipe(
       tap(event => {
         if (event.data.status === Status.Error) {
-          this.alert.showError({
+          this.alert.set({
             status: event.data.status,
             errors: event.data.errors,
             rawData: JSON.stringify(event.data.rawData)
@@ -122,7 +124,7 @@ export class DataStudioService {
         this.clientStatus$.next(Status.GeneratingSvg);
       } catch (e: any) {
         this.clientStatus$.next(Status.Error);
-        this.alert.showError({
+        this.alert.set({
           status: Status.Complete,
           errors: [
             e.message,
