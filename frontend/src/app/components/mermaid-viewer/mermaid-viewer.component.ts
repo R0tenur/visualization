@@ -1,23 +1,24 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Exportable } from '../../models/exportable.model';
+import { DataStudioService } from '../../services/data-studio.service';
 @Component({
   selector: 'app-mermaid-viewer',
   templateUrl: './mermaid-viewer.component.html',
   styleUrls: ['./mermaid-viewer.component.scss']
 })
-export class MermaidViewerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MermaidViewerComponent implements OnDestroy {
   private readonly mermaidSvgId: string = 'mermaidSvgChart';
-  @Input() public darkmode!: boolean;
-  @Input() public svg!: string;
-  @Input() public safeSvg!: SafeHtml;
-  @ViewChild('svgContainer')
-  svgContainer!: ElementRef;
   public get ViewBoxString(): string {
     return `${this.viewBox.value.x / this.scale} ${this.viewBox.value.y / this.scale} ${this.viewBox.value.w / this.scale} ${this.viewBox.value.h / this.scale}`;
   }
+  public get Database$(): Observable<Exportable> {
+    return this.dataStudioService.Database$;
+  }
 
-  private viewBoxSubscription!: Subscription;
+  public safeSvg!: SafeHtml;
   private svgElement!: SVGElement;
   private isPanning = false;
   private viewBox: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -25,17 +26,22 @@ export class MermaidViewerComponent implements OnInit, AfterViewInit, OnDestroy 
   public scale = 0.8;
   private startPoint: { x: number, y: number } = { x: 0, y: 0 };
   private endPoint: { x: number, y: number } = { x: 0, y: 0 };
-  public get Svg$(): Observable<(SafeHtml | null)> {
-    return this.svg$.asObservable();
+  private loaded = false;
+  public database: Exportable | undefined;
+  private viewBoxSubscription!: Subscription;
+
+
+  constructor(private readonly sanitizer: DomSanitizer, private readonly dataStudioService: DataStudioService) {
+    this.dataStudioService
+      .Database$.pipe(take(1)).subscribe(d => {
+        if (!this.database) {
+          this.database = d;
+          this.safeSvg = this.safeHtml(d.svg);
+
+        }
+      });
   }
-  public svg$: BehaviorSubject<SafeHtml | null> = new BehaviorSubject<SafeHtml | null>(null);
-  constructor(public readonly sanitizer: DomSanitizer) { }
-  ngOnInit(): void {
-    this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(this.svg);
-  }
-  public ngAfterViewInit(): void {
-    this.setupSvgHandling();
-  }
+
   public ngOnDestroy(): void {
     if (this.viewBoxSubscription) {
       this.viewBoxSubscription.unsubscribe();
@@ -49,10 +55,16 @@ export class MermaidViewerComponent implements OnInit, AfterViewInit, OnDestroy 
   public refreshZoom(): void {
     this.viewBox.next(this.viewBox.value);
   }
+  public exportSvg(svg: string, markdown: string): void {
+    this.dataStudioService.saveCommand({ chart: svg, mermaid: markdown });
+  }
 
   @HostListener('body:wheel', ['$event'])
   public refreshZoom2(e: WheelEvent): void {
 
+    if (!this.loaded) {
+      return;
+    }
     this.scale += (-e.deltaY / 100);
 
     if (this.scale < 0.1) {
@@ -65,23 +77,11 @@ export class MermaidViewerComponent implements OnInit, AfterViewInit, OnDestroy 
     this.viewBox.next(this.viewBox.value);
   }
 
-  private setupSvgHandling(): void {
-    this.svgElement = document.querySelector('#' + this.mermaidSvgId) as any as SVGElement;
-    this.svgSize = { w: this.svgElement.clientWidth, h: this.svgElement.clientHeight };
-    this.viewBox.next({ x: 0, y: 0, ...this.svgSize });
-    this.startPoint = { x: 0, y: 0 };
-    this.endPoint = { x: 0, y: 0 };
-    document.getElementById(this.mermaidSvgId)?.removeAttribute('style');
-    document.getElementById(this.mermaidSvgId)?.removeAttribute('height');
-    document.getElementById(this.mermaidSvgId)?.removeAttribute('width');
-    setTimeout(() => {
-      this.viewBoxSubscription = this.viewBox.asObservable().subscribe(() => {
-        document.getElementById(this.mermaidSvgId)?.setAttribute('viewBox', this.ViewBoxString);
-      });
-    }, 60);
-  }
   @HostListener('body:mousedown', ['$event'])
   private startPan(e: MouseEvent): boolean {
+    if (!this.loaded) {
+      return true;
+    }
     if (!(e.target as any).classList.contains('zoom')) {
       this.isPanning = true;
       this.startPoint = { x: e.x, y: e.y };
@@ -90,7 +90,7 @@ export class MermaidViewerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   @HostListener('body:mousemove', ['$event'])
   private panning(e: MouseEvent): boolean {
-    if (this.isPanning) {
+    if (this.isPanning && this.loaded) {
       this.endPoint = { x: e.x, y: e.y };
       let dx = (this.startPoint.x - this.endPoint.x - 5) / (10);
       let dy = (this.startPoint.y - this.endPoint.y - 5) / (10);
@@ -112,9 +112,40 @@ export class MermaidViewerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
   @HostListener('body:mouseup', ['$event'])
   private panEnd(): boolean {
-    if (this.isPanning) {
+    if (this.isPanning && this.loaded) {
+
       this.isPanning = false;
     }
     return true;
+  }
+
+  private setupSvgHandling(): void {
+    setTimeout(() => {
+      this.svgElement = document.querySelector('#' + this.mermaidSvgId) as any as SVGElement;
+      this.removeMermaidAttributes();
+      this.svgSize = { w: this.svgElement.clientWidth, h: this.svgElement.clientHeight };
+      this.viewBox.next({ x: 0, y: 0, ...this.svgSize });
+      this.startPoint = { x: 0, y: 0 };
+      this.endPoint = { x: 0, y: 0 };
+      this.loaded = true;
+    }, 40);
+
+    setTimeout(() => {
+      this.viewBoxSubscription = this.viewBox.asObservable().subscribe(() => {
+        document.getElementById(this.mermaidSvgId)?.setAttribute('viewBox', this.ViewBoxString);
+      });
+
+    }, 200);
+  }
+  private safeHtml(svg: string): SafeHtml {
+    this.setupSvgHandling();
+    return this.sanitizer.bypassSecurityTrustHtml(svg);
+  }
+
+  private removeMermaidAttributes(): void {
+    document.getElementById(this.mermaidSvgId)?.removeAttribute('style');
+    document.getElementById(this.mermaidSvgId)?.removeAttribute('height');
+    document.getElementById(this.mermaidSvgId)?.removeAttribute('width');
+    document.getElementById(this.mermaidSvgId)?.removeAttribute('viewBox');
   }
 }

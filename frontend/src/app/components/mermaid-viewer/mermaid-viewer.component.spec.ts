@@ -18,8 +18,7 @@ describe('MermaidViewerComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MermaidViewerComponent);
     component = fixture.componentInstance;
-    component.darkmode = true;
-    component.svg = sampleSvg;
+
     fixture.detectChanges();
   });
 
