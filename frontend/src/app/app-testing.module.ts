@@ -1,5 +1,6 @@
+/* istanbul ignore file */
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ButtonComponent } from './components/button/button.component';
@@ -41,11 +42,11 @@ const fakeMermaidProvider = ({
     ButtonComponent,
   ],
   imports: [
-    FormsModule,
     RouterTestingModule.withRoutes([]),
+    ReactiveFormsModule
   ],
   providers: [fakeWindowProvider],
-  exports: [ButtonComponent, FormsModule, RouterTestingModule]
+  exports: [ButtonComponent, RouterTestingModule, ReactiveFormsModule]
 })
 export class AppTestingModule { }
 
