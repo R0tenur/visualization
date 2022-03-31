@@ -9,6 +9,8 @@ import { WINDOW } from './services/window.token';
 let list: (e: Event) => void;
 const fakeWindowProvider = ({
   provide: WINDOW, useFactory: () => ({
+    innerHeight: 100,
+    innerWidth: 100,
     removeEventListener: (type: string, listener: () => void) => {
       list = undefined as any as (e: Event) => void;
     },
