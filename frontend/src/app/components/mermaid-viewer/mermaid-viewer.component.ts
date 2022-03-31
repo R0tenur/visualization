@@ -139,7 +139,7 @@ export class MermaidViewerComponent implements OnDestroy {
   }
   private safeHtml(svg: string): SafeHtml {
     this.setupSvgHandling();
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
+    return this.sanitizer.bypassSecurityTrustHtml(svg); // NOSONAR - html is produces by mermaid
   }
 
   private removeMermaidAttributes(): void {
