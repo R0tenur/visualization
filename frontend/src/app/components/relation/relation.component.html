@@ -1,0 +1,21 @@
+<div *ngIf="state.select$ | async as addRelation">
+  <div class="relation" [style.background]="constants.backgroundColor" [style.top.px]="addRelation.position.y"
+    [style.left.px]="addRelation.position.x">
+    <label for="search">Find table </label>
+    <input #searchInput id="search" type="search" [formControl]="searchControl">
+    {{focusInput()}}
+    <div *ngIf="!selectedTable">
+      <h5>Select table:</h5>
+      <div *ngFor="let result of searchResults$ | async">
+        <div class="list" (click)="selectTable(result)">{{result.schema}}.{{result.name}}</div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedTable">
+      <h5>Select column:</h5>
+      <div *ngFor="let column of selectedTable.columns">
+        <div class="list" (click)="selectColumn(addRelation.column, column)">{{column.name}}</div>
+      </div>
+    </div>
+  </div>
+</div>
