@@ -129,7 +129,6 @@ describe('ChartComponent', () => {
 
     it('should not go out of lower bound', () => {
       // Arrange
-      const initalScale = component.scale;
       const wheelEvent = new WheelEvent('WheelEvent', {
         deltaY: 1000
       });
@@ -141,7 +140,6 @@ describe('ChartComponent', () => {
 
     it('should not go out of upper bound', () => {
       // Arrange
-      const initalScale = component.scale;
       const wheelEvent = new WheelEvent('WheelEvent', {
         deltaY: -1000
       });
