@@ -40,7 +40,7 @@ describe('DataStudioService', () => {
       // Arrange
       spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
         {
-          hasAttribute: (attribute: string) => false,
+          hasAttribute: (_: string) => false,
         },
       ] as any as HTMLCollectionOf<Element>);
 
@@ -55,7 +55,7 @@ describe('DataStudioService', () => {
       // Arrange
       spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
         {
-          hasAttribute: (attribute: string) => true,
+          hasAttribute: (_: string) => true,
         },
       ] as any as HTMLCollectionOf<Element>);
 
@@ -73,7 +73,7 @@ describe('DataStudioService', () => {
       // Arrange
       spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
         {
-          getAttribute: (attribute: string) => 'dummy',
+          getAttribute: (_: string) => 'dummy',
         },
       ] as any as HTMLCollectionOf<Element>);
 
@@ -88,7 +88,7 @@ describe('DataStudioService', () => {
       // Arrange
       spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
         {
-          getAttribute: (attribute: string) => 'vscode-dark',
+          getAttribute: (_: string) => 'vscode-dark',
         },
       ] as any as HTMLCollectionOf<Element>);
 
@@ -193,7 +193,7 @@ describe('DataStudioService', () => {
           bindFunctions: (element: Element) => void
         ) => void) => {
         if (cb) {
-          cb(returnedSvg, (element: Element) => { });
+          cb(returnedSvg, (___: Element) => { });
         }
         return '';
       };
