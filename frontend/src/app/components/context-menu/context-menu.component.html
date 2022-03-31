@@ -1,4 +1,4 @@
-<div *ngIf="state.select$ | async as contextMenu" class="context-menu" [style.top.px]="contextMenu.position.y" [style.left.px]="contextMenu.position.x">
+<div *ngIf="state.select$ | async as contextMenu" class="context-menu" [style.background]="constants.backgroundColor" [style.top.px]="contextMenu.position.y" [style.left.px]="contextMenu.position.x">
   <ul>
     <li class="menu-item" class="flex justify-content-between" *ngFor="let item of contextMenu.items" (click)="handleEvent(item)">
       <span>{{item.label}}</span><span class="muted">{{item.shortcut ? item.shortcut : ''}}</span>
