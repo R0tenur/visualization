@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { Rename, renameKey } from '../../models/rename.model';
 import { BuilderService } from '../../services/builder.service';
 import { StateInjector } from '../../services/state.token';

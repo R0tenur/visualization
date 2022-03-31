@@ -7,8 +7,7 @@ export class State<T> {
   private currentHistoryIndex = 0;
   private history: T[] = [undefined as any as T];
   private readonly state: BehaviorSubject<T> = new BehaviorSubject<T>(undefined as any as T);
-  constructor() {
-  }
+
   public set(newState: T): void {
     if (this.currentHistoryIndex < this.history.length - 1) {
       this.history = this.history.slice(0, this.currentHistoryIndex);
