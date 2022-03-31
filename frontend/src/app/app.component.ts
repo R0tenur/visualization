@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Inject } from '@angular/core';
 import { DataStudioService } from './services/data-studio.service';
-import { Exportable } from './models/exportable.model';
+import { ContextMenuService } from './services/context-menu.service';
+import { StateInjector } from './services/state.token';
+import { Rename, renameKey } from './models/rename.model';
+import { State } from './state/state';
 
 @Component({
   selector: 'app-root',
@@ -10,13 +12,15 @@ import { Exportable } from './models/exportable.model';
 })
 export class AppComponent {
 
-  public get Database$(): Observable<Exportable> {
-    return this.dataStudioService.Database$;
-  }
   constructor(
-    public readonly dataStudioService: DataStudioService) { }
+    public readonly dataStudioService: DataStudioService,
+    public readonly contextMenu: ContextMenuService,
+    @Inject(StateInjector(renameKey)) private readonly rename: State<Rename>,
+  ) { }
 
-  public exportSvg(svg: string, markdown: string): void {
-    this.dataStudioService.saveCommand({ chart: svg, mermaid: markdown });
+  public clearOverlays(): void {
+    this.contextMenu.clear();
+    this.rename.clear();
   }
+
 }
