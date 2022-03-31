@@ -1,7 +1,6 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import { ContextMenu, contextMenuStateKey } from '../../models/context-menu.model';
-import { ContextMenuService } from '../../services/context-menu.service';
 import { StateInjector } from '../../services/state.token';
 import { State } from '../../state/state';
 

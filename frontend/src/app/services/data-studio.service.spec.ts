@@ -193,7 +193,7 @@ describe('DataStudioService', () => {
           bindFunctions: (element: Element) => void
         ) => void) => {
         if (cb) {
-          cb(returnedSvg, (___: Element) => { });
+          cb(returnedSvg, (___: Element) => { }); // NOSONAR - this is a fake callback
         }
         return '';
       };

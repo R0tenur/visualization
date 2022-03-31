@@ -1,7 +1,7 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { AddRelation, addRelationKey } from '../../models/add-relation.model';
 import { builderKey } from '../../models/builder.model';
 import { Column } from '../../models/column.model';

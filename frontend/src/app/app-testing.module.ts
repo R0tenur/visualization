@@ -10,7 +10,7 @@ const fakeWindowProvider = ({
   provide: WINDOW, useFactory: () => ({
     innerHeight: 100,
     innerWidth: 100,
-    removeEventListener: (_: string, listener: () => void) => {
+    removeEventListener: (_: string, __: () => void) => {
       list = undefined as any as (e: Event) => void;
     },
     addEventListener: (_: string, listener: () => void) => {
