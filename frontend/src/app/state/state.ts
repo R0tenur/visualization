@@ -11,7 +11,7 @@ export class State<T> {
   }
   public set(newState: T): void {
     if (this.currentHistoryIndex < this.history.length - 1) {
-      this.history.slice(0, this.currentHistoryIndex);
+      this.history = this.history.slice(0, this.currentHistoryIndex);
     }
 
     this.history.push(newState);
