@@ -1,11 +1,10 @@
 import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { AddRelation, addRelationKey } from '../../models/add-relation.model';
 import { builderKey } from '../../models/builder.model';
 import { Column } from '../../models/column.model';
-import { Relation, relationStateKey } from '../../models/relation.model';
 import { Table } from '../../models/table-svg.model';
 import { BuilderService } from '../../services/builder.service';
 import { StateInjector } from '../../services/state.token';
