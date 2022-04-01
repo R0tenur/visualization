@@ -22,15 +22,21 @@ const fakeWindowProvider = ({
         list = listener;
       },
       getElementsByTagName: (_: string) => [
-        {
-          hasAttribute: (__: string) => false,
-          getAttribute: (__: string) => '',
-
-        }
-      ]
+        fakeElement
+      ],
+      getElementById: (__: string) => fakeElement,
+      querySelector: (__: string) => fakeElement
     }
   })
 });
+const fakeElement = {
+  clientWidth: 100,
+  clientHeight: 100,
+  hasAttribute: (___: string) => false,
+  getAttribute: (___: string) => '',
+  removeAttribute: (___: string) => { },
+  setAttribute: (___: string, ____: string) => { },
+};
 
 @NgModule({
   declarations: [

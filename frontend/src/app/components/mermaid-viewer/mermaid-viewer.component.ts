@@ -1,9 +1,10 @@
-import { Component, HostListener, OnDestroy } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Exportable } from '../../models/exportable.model';
 import { DataStudioService } from '../../services/data-studio.service';
+import { WINDOW } from '../../services/window.token';
 @Component({
   selector: 'app-mermaid-viewer',
   templateUrl: './mermaid-viewer.component.html',
@@ -24,14 +25,17 @@ export class MermaidViewerComponent implements OnDestroy {
   private viewBox: BehaviorSubject<any> = new BehaviorSubject(null);
   public svgSize: any = { w: 0, h: 0 };
   public scale = 0.8;
+  public loaded = false;
   private startPoint: { x: number, y: number } = { x: 0, y: 0 };
   private endPoint: { x: number, y: number } = { x: 0, y: 0 };
-  private loaded = false;
   public database: Exportable | undefined;
   private viewBoxSubscription!: Subscription;
 
 
-  constructor(private readonly sanitizer: DomSanitizer, private readonly dataStudioService: DataStudioService) {
+  constructor(
+    private readonly sanitizer: DomSanitizer,
+    private readonly dataStudioService: DataStudioService,
+    @Inject(WINDOW) private readonly window: Window) {
     this.dataStudioService
       .Database$.pipe(take(1)).subscribe(d => {
         if (!this.database) {
@@ -79,10 +83,8 @@ export class MermaidViewerComponent implements OnDestroy {
 
   @HostListener('body:mousedown', ['$event'])
   private startPan(e: MouseEvent): boolean {
-    if (!this.loaded) {
-      return true;
-    }
-    if (!(e.target as any).classList.contains('zoom')) {
+
+    if (this.loaded && !(e.target as any).classList.contains('zoom')) {
       this.isPanning = true;
       this.startPoint = { x: e.x, y: e.y };
     }
@@ -121,7 +123,7 @@ export class MermaidViewerComponent implements OnDestroy {
 
   private setupSvgHandling(): void {
     setTimeout(() => {
-      this.svgElement = document.querySelector('#' + this.mermaidSvgId) as any as SVGElement;
+      this.svgElement = this.window.document.querySelector('#' + this.mermaidSvgId) as any as SVGElement;
       this.removeMermaidAttributes();
       this.svgSize = { w: this.svgElement.clientWidth, h: this.svgElement.clientHeight };
       this.viewBox.next({ x: 0, y: 0, ...this.svgSize });
@@ -132,7 +134,7 @@ export class MermaidViewerComponent implements OnDestroy {
 
     setTimeout(() => {
       this.viewBoxSubscription = this.viewBox.asObservable().subscribe(() => {
-        document.getElementById(this.mermaidSvgId)?.setAttribute('viewBox', this.ViewBoxString);
+        this.window.document.getElementById(this.mermaidSvgId)?.setAttribute('viewBox', this.ViewBoxString);
       });
 
     }, 200);
@@ -143,9 +145,9 @@ export class MermaidViewerComponent implements OnDestroy {
   }
 
   private removeMermaidAttributes(): void {
-    document.getElementById(this.mermaidSvgId)?.removeAttribute('style');
-    document.getElementById(this.mermaidSvgId)?.removeAttribute('height');
-    document.getElementById(this.mermaidSvgId)?.removeAttribute('width');
-    document.getElementById(this.mermaidSvgId)?.removeAttribute('viewBox');
+    this.window.document.getElementById(this.mermaidSvgId)?.removeAttribute('style');
+    this.window.document.getElementById(this.mermaidSvgId)?.removeAttribute('height');
+    this.window.document.getElementById(this.mermaidSvgId)?.removeAttribute('width');
+    this.window.document.getElementById(this.mermaidSvgId)?.removeAttribute('viewBox');
   }
 }
