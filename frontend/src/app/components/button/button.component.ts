@@ -7,5 +7,4 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class ButtonComponent {
   @Output() public readonly clicked = new EventEmitter<boolean>();
-  constructor() { }
 }
