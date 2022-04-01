@@ -7,6 +7,7 @@ import { builderKey } from '../../models/builder.model';
 import { Column } from '../../models/column.model';
 import { Relation, relationStateKey } from '../../models/relation.model';
 import { Table } from '../../models/table-svg.model';
+import { BuilderService } from '../../services/builder.service';
 import { StateInjector } from '../../services/state.token';
 import constants from '../../settings/constants';
 import { State } from '../../state/state';
@@ -25,9 +26,9 @@ export class RelationComponent {
   public selectedTable: Table | undefined;
   constructor(
     @Inject(StateInjector(addRelationKey)) public readonly state: State<AddRelation>,
-    @Inject(StateInjector(builderKey)) public readonly tableState: State<Table[]>,
-    @Inject(StateInjector(relationStateKey)) public readonly relationState: State<Relation[]>,
-    private formBuilder: FormBuilder) {
+    @Inject(StateInjector(builderKey)) private readonly tableState: State<Table[]>,
+    private readonly builderService: BuilderService,
+    private readonly formBuilder: FormBuilder) {
     this.searchControl = this.formBuilder.control('');
     this.searchResults$ = this.searchControl.valueChanges
       .pipe(
@@ -39,16 +40,7 @@ export class RelationComponent {
     this.selectedTable = table;
   }
   public async selectColumn(from: Column, to: Column): Promise<void> {
-    const relations = await this.relationState.select$.pipe(take(1)).toPromise();
-    const tables = await this.tableState.select$.pipe(take(1)).toPromise();
-
-    const fromTable = tables.find(x => x.name === from.table.name && x.schema === from.table.schema);
-    const toTable = tables.find(x => x.name === to.table.name && x.schema === to.table.schema);
-    const relation = new Relation(from, to);
-    fromTable?.fromRelations.push(relation);
-    toTable?.toRelations.push(relation);
-    this.relationState.set([...relations ?? [], relation]);
-    this.tableState.set([...tables]);
+    await this.builderService.addRelation(from, to);
     this.state.clear();
     this.selectedTable = undefined;
   }
