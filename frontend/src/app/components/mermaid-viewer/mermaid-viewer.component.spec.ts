@@ -1,6 +1,5 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
 import { AppTestingModule } from '../../app-testing.module';
 import { ChartErrorKey, ChartError } from '../../models/error.model';
 import { DataStudioService } from '../../services/data-studio.service';

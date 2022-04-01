@@ -34,8 +34,8 @@ const fakeElement = {
   clientHeight: 100,
   hasAttribute: (___: string) => false,
   getAttribute: (___: string) => '',
-  removeAttribute: (___: string) => { },
-  setAttribute: (___: string, ____: string) => { },
+  removeAttribute: (___: string) => { }, // NOSONAR - removeAttribute is for testing
+  setAttribute: (___: string, ____: string) => { }, // NOSONAR - setAttibute is for testing
 };
 
 @NgModule({
