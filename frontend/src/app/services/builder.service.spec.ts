@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import { builderKey } from '../models/builder.model';
 import { Column } from '../models/column.model';
+import { Highlighted, highlightedKey } from '../models/highlighted.model';
 import { Relation, relationStateKey } from '../models/relation.model';
 import { Table } from '../models/table-svg.model';
 import { State } from '../state/state';
@@ -15,6 +16,7 @@ describe('BuilderService', () => {
   let relationState: State<Relation[]>;
   let stateSubject: BehaviorSubject<Table[]>;
   let relationSubject: BehaviorSubject<Relation[]>;
+  let highlightedState: State<Highlighted>;
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -23,13 +25,21 @@ describe('BuilderService', () => {
         },
         {
           provide: StateInjector(relationStateKey), useValue: new State<Relation[]>(),
-        }],
+        },
+        {
+          provide: StateInjector(highlightedKey), useValue: new State<Highlighted>(),
+        },
+      ],
     });
     tableState = TestBed.inject<State<Table[]>>(StateInjector(builderKey));
     relationState = TestBed.inject<State<Relation[]>>(StateInjector(relationStateKey));
+    highlightedState = TestBed.inject<State<Highlighted>>(StateInjector(highlightedKey));
     relationSubject = new BehaviorSubject(undefined as any as Relation[]);
+
     spyOn(tableState, 'set');
     spyOn(relationState, 'set');
+    spyOn(highlightedState, 'set');
+
     stateSubject = new BehaviorSubject(undefined as any as Table[]);
     spyOnProperty(tableState, 'select$').and.returnValue(stateSubject.asObservable());
     spyOnProperty(relationState, 'select$').and.returnValue(relationSubject.asObservable());
@@ -62,6 +72,8 @@ describe('BuilderService', () => {
 
       // Assert
       expect(tableState.set).toHaveBeenCalledWith([...arr, newTable]);
+      expect(highlightedState.set).toHaveBeenCalledWith(newTable);
+
     });
   });
 
@@ -78,6 +90,8 @@ describe('BuilderService', () => {
 
       // Assert
       expect(tableState.set).toHaveBeenCalledWith([new Table(newName, 'dummy')]);
+      expect(highlightedState.set).toHaveBeenCalledWith(new Table(newName, 'dummy'));
+
     });
   });
 
@@ -96,6 +110,7 @@ describe('BuilderService', () => {
       const expected = new Table('table', 'dummy');
       expected.columns.push(new Column(0, table, newName));
       expect(tableState.set).toHaveBeenCalledWith([expected]);
+      expect(highlightedState.set).toHaveBeenCalledWith(expected.columns[0]);
     });
   });
 
@@ -117,6 +132,7 @@ describe('BuilderService', () => {
       const expected = new Table('table', 'dummy');
       expected.columns.push(new Column(0, table, newName));
       expect(tableState.set).toHaveBeenCalledWith([expected]);
+      expect(highlightedState.set).toHaveBeenCalledWith(expected.columns[0]);
     });
   });
 
@@ -139,6 +155,7 @@ describe('BuilderService', () => {
 
       // Assert
       expect(relationState.set).toHaveBeenCalledWith([new Relation(column1, column2)]);
+      expect(highlightedState.set).toHaveBeenCalledWith(column1);
     });
   });
 
