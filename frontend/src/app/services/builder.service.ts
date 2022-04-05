@@ -16,9 +16,9 @@ export class BuilderService {
   private columnIndex = -1;
 
   constructor(
-    @Inject(StateInjector(builderKey)) public readonly tableState: State<Table[]>,
-    @Inject(StateInjector(relationStateKey)) public readonly relationState: State<Relation[]>,
-    @Inject(StateInjector(highlightedKey)) public readonly highlightedState: State<Highlighted>
+    @Inject(StateInjector(builderKey)) private readonly tableState: State<Table[]>,
+    @Inject(StateInjector(relationStateKey)) private readonly relationState: State<Relation[]>,
+    @Inject(StateInjector(highlightedKey)) private readonly highlightedState: State<Highlighted>
   ) {
     this.tableState.set([]);
   }
