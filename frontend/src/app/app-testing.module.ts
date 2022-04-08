@@ -21,6 +21,10 @@ const fakeWindowProvider = ({
       addEventListener: (_: string, listener: () => void) => {
         list = listener;
       },
+      removeEventListener: (_: string, __: () => void) => {
+        list = undefined as any as (e: Event) => void;
+      },
+      dispatchEvent: (e: Event) => list(e),
       getElementsByTagName: (_: string) => [
         fakeElement
       ],
