@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { MermaidViewerComponent } from './components/mermaid-viewer/mermaid-viewer.component';
@@ -17,7 +17,6 @@ import { ChartComponent } from './components/chart/chart.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { RenameModalComponent } from './components/rename-modal/rename-modal.component';
 import { RelationComponent } from './components/relation/relation.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,10 +35,10 @@ import { RelationComponent } from './components/relation/relation.component';
   imports: [
     BrowserModule,
     ReactiveFormsModule,
+    FormsModule,
     RouterModule.forRoot(routes),
-  ],
-  providers: [
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+

@@ -5,6 +5,7 @@ import { StateInjector } from './services/state.token';
 import { Rename, renameKey } from './models/rename.model';
 import { State } from './state/state';
 import { AddRelation, addRelationKey } from './models/add-relation.model';
+import { shortcutsDisabledKey } from './services/shortcut.service';
 
 @Component({
   selector: 'app-root',
@@ -17,12 +18,15 @@ export class AppComponent {
     public readonly contextMenu: ContextMenuService,
     @Inject(StateInjector(renameKey)) private readonly rename: State<Rename>,
     @Inject(StateInjector(addRelationKey)) private readonly addRelation: State<AddRelation>,
+    @Inject(StateInjector(shortcutsDisabledKey)) private readonly shortcutDisabledState: State<boolean>,
+
   ) { }
 
   public clearOverlays(): void {
     this.contextMenu.clear();
     this.rename.clear();
     this.addRelation.clear();
+    this.shortcutDisabledState.set(false);
   }
 
 }
