@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnDestroy } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { AddRelation, addRelationKey } from '../models/add-relation.model';
 import { Column } from '../models/column.model';
 import { Highlighted, highlightedKey } from '../models/highlighted.model';
@@ -18,8 +18,7 @@ export class ShortcutService implements OnDestroy {
       this.builderService.addTable(
         undefined,
         { x: this.highlighted.x + this.highlighted.width + 50, y: this.highlighted.y }) : this.builderService.addTable(),
-    c: () => this.highlighted instanceof Column ? this.builderService.addColumn(this.highlighted.table, 'newColumn') :
-      this.highlighted instanceof Table ? this.builderService.addColumn(this.highlighted, 'newColumn') : null,
+    c: this.addColumn,
     r: () => this.highlighted instanceof Column ?
       this.relationState.set({ column: this.highlighted, position: { x: this.highlighted.x, y: this.highlighted.y } }) : null,
 
@@ -47,5 +46,13 @@ export class ShortcutService implements OnDestroy {
     this.highlightedSubscription.unsubscribe();
     this.shortcutSubscription.unsubscribe();
     this.disbledSubscription.unsubscribe();
+  }
+
+  private addColumn(): void {
+    if (this.highlighted instanceof Column) {
+      this.builderService.addColumn(this.highlighted.table, 'untitled');
+    } else if (this.highlighted instanceof Table) {
+      this.builderService.addColumn(this.highlighted, 'untitled');
+    }
   }
 }
