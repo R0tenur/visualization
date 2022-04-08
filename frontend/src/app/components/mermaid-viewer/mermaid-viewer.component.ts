@@ -123,7 +123,7 @@ export class MermaidViewerComponent implements OnDestroy {
 
   private setupSvgHandling(): void {
     setTimeout(() => {
-      this.svgElement = this.window.document.querySelector('#' + this.mermaidSvgId) as any as SVGElement;
+      this.svgElement = this.window.document.querySelector('#' + this.mermaidSvgId) as SVGElement;
       this.removeMermaidAttributes();
       this.svgSize = { w: this.svgElement.clientWidth, h: this.svgElement.clientHeight };
       this.viewBox.next({ x: 0, y: 0, ...this.svgSize });
