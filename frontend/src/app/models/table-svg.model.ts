@@ -25,7 +25,7 @@ export class Table {
     return this.y;
   }
   public get height(): number {
-    return this.titleHeight + this.columns.length * constants.columnHeight;
+    return this.titleHeight + this.columns.length * constants.columnHeight + (this.columns.length ? constants.columnHeight * .5 : 0);
   }
   public get bottomPosition(): number {
     return this.y + this.height;

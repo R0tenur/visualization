@@ -5,6 +5,12 @@ import { Table } from './table-svg.model';
 export class Column implements SvgPosition {
   public readonly width = constants.tableWidth;
   public readonly height = constants.columnHeight;
+  public get x(): number {
+    return this.table.x;
+  }
+  public get y(): number {
+    return this.table.y + this.table.titleHeight + (this.height * (this.index));
+  }
   public get xBox(): number {
     return this.table.x;
   }

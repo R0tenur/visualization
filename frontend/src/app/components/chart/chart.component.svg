@@ -1,15 +1,15 @@
 <svg #svg (mouseup)="dragEnd($event)" (mousemove)="drag($event)" [attr.viewBox]="(viewBoxString$ | async)" xmlns="http://www.w3.org/2000/svg" version="1.1">
-  <rect (contextmenu)="contextMenu($event)" style="fill:transparent;" width="100%" height="100%"></rect>
+  <rect (click)="unHiglight()" (contextmenu)="contextMenu($event)" style="fill:transparent;" width="100%" height="100%"></rect>
   <g (mousedown)="dragStart($event, table)" *ngFor="let table of tables">
-    <rect (contextmenu)="contextMenu($event, table)" [attr.x]="table.x" [attr.y]="table.yBox" [attr.width]="table.width" [attr.height]="table.titleHeight" style="{{'fill:' + constants.background}}" />
-    <text (contextmenu)="contextMenu($event, table)" [attr.x]="table.xText" [attr.y]="table.yText" [attr.width]="table.width" [attr.height]="table.titleHeight" style="{{'fill:' + constants.fontColor}}" [attr.font-size]="constants.fontSize">{{table.schema}}.{{table.name}}</text>
+    <rect (click)="highlight(table)" (contextmenu)="contextMenu($event, table)" [attr.x]="table.x" [attr.y]="table.yBox" [attr.width]="table.width" [attr.height]="table.titleHeight" style="{{'fill:' + constants.background}}" />
+    <text (click)="highlight(table)" (contextmenu)="contextMenu($event, table)" [attr.x]="table.xText" [attr.y]="table.yText" [attr.width]="table.width" [attr.height]="table.titleHeight" style="{{'fill:' + constants.fontColor}}" [attr.font-size]="constants.fontSize">{{table.schema}}.{{table.name}}</text>
     <polyline style="stroke:{{constants.borderColor}};stroke-width:{{constants.borderWidth}};" [attr.points]="(table.x) + ',' + (table.yBox) + ' ' + (table.x + table.width) + ',' + (table.yBox)" />
     <polyline style="{{'stroke:' + constants.borderColor}};stroke-width:{{constants.borderWidth}};" [attr.points]="table.x + ',' + table.yBox + ' ' + table.x + ',' + (table.yBox + table.height)" />
     <polyline style="{{'stroke:' + constants.borderColor}};stroke-width:{{constants.borderWidth}};" [attr.points]="(table.x + table.width) + ',' + table.yBox + ' ' + (table.x + table.width) + ',' + (table.yBox + table.height)" />
     <polyline style="stroke:{{constants.borderColor}};stroke-width:{{constants.borderWidth}};" [attr.points]="(table.x) + ',' + (table.yBox + table.titleHeight) + ' ' + (table.x + table.width) + ',' + (table.yBox + table.titleHeight)" />
     <g *ngFor="let column of table.columns; let index = index">
-      <rect (contextmenu)="contextMenu($event, table, column)" [attr.x]="column.xBox" [attr.y]="column.yBox" [attr.width]="column.width" [attr.height]="index === table.columns.length - 1 ? column.height * 1.5 : column.height" style="{{'fill:' + constants.background}}" />
-      <text (contextmenu)="contextMenu($event, table, column)" [attr.x]="column.xText" [attr.y]="column.yText" [attr.width]="column.width" [attr.height]="column.height" style="{{'fill:' + constants.fontColor}}" [attr.font-size]="constants.fontSize"> {{column.name}}</text>
+      <rect (click)="highlight(column)" (contextmenu)="contextMenu($event, table, column)" [attr.x]="column.xBox" [attr.y]="column.yBox" [attr.width]="column.width" [attr.height]="index === table.columns.length - 1 ? column.height * 1.5 : column.height" style="{{'fill:' + constants.background}}" />
+      <text (click)="highlight(column)" (contextmenu)="contextMenu($event, table, column)" [attr.x]="column.xText" [attr.y]="column.yText" [attr.width]="column.width" [attr.height]="column.height" style="{{'fill:' + constants.fontColor}}" [attr.font-size]="constants.fontSize"> {{column.name}}</text>
       <polyline style="{{'stroke:' + constants.borderColor}};stroke-width:{{constants.borderWidth}};" [attr.points]="column.xBox + ',' + column.yBox + ' ' + column.xBox + ',' + (column.yBox + (column.height * 1.5))" />
       <polyline style="{{'stroke:' + constants.borderColor}};stroke-width:{{constants.borderWidth}};" [attr.points]="(column.xBox + column.width) + ',' + column.yBox + ' ' + (column.xBox + column.width) + ',' + (column.yBox + (column.height * 1.5))" />
       <polyline *ngIf="index === table.columns.length - 1" style="stroke:{{constants.borderColor}};stroke-width:{{constants.borderWidth}};" [attr.points]="(column.xBox) + ',' + (column.yBox + (column.height * 1.5)) + ' ' + (column.xBox + column.width) + ',' + (column.yBox + (column.height * 1.5))" />
@@ -26,6 +26,12 @@
     <line [attr.x1]="relation.toArrowXStart" [attr.y2]="relation.toArrowYDownEnd" [attr.x2]="relation.toArrowXEnd" [attr.y1]="relation.toY" style="stroke:{{constants.fontColor}};stroke-width:{{constants.borderWidth}};" />
 
     <line [attr.x1]="relation.toXStart" [attr.y1]="relation.toY" [attr.x2]="relation.toXEnd" [attr.y2]="relation.toY" style="stroke:{{constants.fontColor}};stroke-width:{{constants.borderWidth}};" />
+  </g>
+  <g *ngIf="highlightedState.select$ | async as highlighted">
+    <polyline style="{{'stroke:' + 'tomato'}};stroke-width:{{constants.borderWidth}};" [attr.points]="(highlighted.x) + ',' + (highlighted.y + (highlighted.height)) + ' ' + (highlighted.x + highlighted.width) + ',' + (highlighted.y + highlighted.height)" />
+    <polyline style="{{'stroke:' + 'tomato'}};stroke-width:{{constants.borderWidth}};" [attr.points]="(highlighted.x) + ',' + (highlighted.y) + ' ' + (highlighted.x + highlighted.width) + ',' + (highlighted.y)" />
+    <polyline style="{{'stroke:' + 'tomato'}};stroke-width:{{constants.borderWidth}};" [attr.points]="(highlighted.x) + ',' + (highlighted.y) + ' ' + (highlighted.x) + ',' + (highlighted.y + highlighted.height)" />
+    <polyline style="{{'stroke:' + 'tomato'}};stroke-width:{{constants.borderWidth}};" [attr.points]="(highlighted.x + highlighted.width) + ',' + (highlighted.y) + ' ' + (highlighted.x + highlighted.width) + ',' + (highlighted.y + highlighted.height)" />
   </g>
 
 

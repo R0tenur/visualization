@@ -10,6 +10,7 @@ import { WINDOW } from '../../services/window.token';
 import constants from '../../settings/constants';
 import { StateInjector } from '../../services/state.token';
 import { State } from '../../state/state';
+import { Highlighted, highlightedKey } from '../../models/highlighted.model';
 
 @Component({
   selector: 'app-chart',
@@ -40,7 +41,8 @@ export class ChartComponent {
     @Inject(WINDOW) private readonly window: Window,
     @Inject(StateInjector(relationStateKey)) public readonly relationState: State<Relation[]>,
     private readonly builderService: BuilderService,
-    private readonly contextMenuService: ContextMenuService) {
+    private readonly contextMenuService: ContextMenuService,
+    @Inject(StateInjector(highlightedKey)) public readonly highlightedState: State<Highlighted>) {
     this.svgSize = { w: this.window.innerWidth, h: this.window.innerHeight };
     this.viewBox.next({ x: 0, y: 0, ...this.svgSize });
     this.scale = 0.8;
@@ -93,7 +95,12 @@ export class ChartComponent {
     }
     this.viewBox.next(this.viewBox.value);
   }
-
+  public highlight(highight: Highlighted): void {
+    this.highlightedState.set(highight);
+  }
+  public unHiglight(): void {
+    this.highlightedState.clear();
+  }
 }
 
 
