@@ -1,8 +1,8 @@
 <div *ngIf="state.select$ | async as rename">
-  <div class="rename" [style.background]="constants.backgroundColor" [style.top.px]="rename.position.y" [style.left.px]="rename.position.x">
+  <div class="rename" [style.background]="constants.backgroundColor" [style.top.px]="rename.position.y"
+    [style.left.px]="rename.position.x">
 
     <input #renameInput (change)="setName(rename, $event.target.value)"
       value="{{rename.column ? rename.column.name : rename.table.name}}" type="text" />
-    {{focusInput()}}
   </div>
 </div>

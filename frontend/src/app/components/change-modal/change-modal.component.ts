@@ -7,11 +7,11 @@ import constants from '../../settings/constants';
 import { State } from '../../state/state';
 
 @Component({
-  selector: 'app-rename-modal',
-  templateUrl: './rename-modal.component.html',
-  styleUrls: ['./rename-modal.component.scss']
+  selector: 'app-change-modal',
+  templateUrl: './change-modal.component.html',
+  styleUrls: ['./change-modal.component.scss']
 })
-export class RenameModalComponent {
+export class ChangeModalComponent {
   public constants = constants;
   @ViewChild('renameInput') public renameInput!: ElementRef;
   private selected = false;
@@ -21,20 +21,17 @@ export class RenameModalComponent {
     private readonly builderService: BuilderService) { }
   public setName(rename: Rename, newName: string): void {
     this.state.clear();
-    this.selected = false;
     this.shortcutDisabledState.set(false);
     this.selected = false;
     if (rename.table) {
       if (rename.column) {
-        this.builderService.renameColumn(rename.table, rename.column, newName);
+        this.builderService.changeColumn(rename.table, rename.column, newName);
         return;
       }
       this.builderService.renameTable(rename.table, newName);
     }
   }
   public focusInput(): string {
-
-
     this.delay(0).then(() => {
       if (this.renameInput) {
         this.renameInput.nativeElement.focus();

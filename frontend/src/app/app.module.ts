@@ -15,7 +15,7 @@ import { routes } from './settings/routes';
 import { BuilderComponent } from './components/builder/builder.component';
 import { ChartComponent } from './components/chart/chart.component';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
-import { RenameModalComponent } from './components/rename-modal/rename-modal.component';
+import { ChangeModalComponent } from './components/change-modal/change-modal.component';
 import { RelationComponent } from './components/relation/relation.component';
 @NgModule({
   declarations: [
@@ -29,7 +29,7 @@ import { RelationComponent } from './components/relation/relation.component';
     BuilderComponent,
     ChartComponent,
     ContextMenuComponent,
-    RenameModalComponent,
+    ChangeModalComponent,
     RelationComponent
   ],
   imports: [
