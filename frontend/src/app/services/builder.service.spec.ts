@@ -126,7 +126,7 @@ describe('BuilderService', () => {
 
       const column = new Column(0, table, oldName);
       // Act
-      await service.renameColumn(table, column, newName);
+      await service.changeColumn(table, column, newName);
 
       // Assert
       const expected = new Table('table', 'dummy');

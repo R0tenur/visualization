@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { builderKey } from '../models/builder.model';
+import { DataType } from '../models/column-type.model';
 import { Column } from '../models/column.model';
 import { Highlighted, highlightedKey } from '../models/highlighted.model';
 import { Position } from '../models/position.model';
@@ -79,13 +80,14 @@ export class BuilderService {
     this.highlightedState.set(from);
   }
 
-  public async renameColumn(table: Table, column: Column, newName: string): Promise<void> {
+  public async changeColumn(table: Table, column: Column, newName: string, type: DataType = column.type): Promise<void> {
     const tables = await this.getTables();
 
     const tableRef = tables.find(t => t.name === table.name && t.schema === table.schema);
     if (!tableRef) { return; }
 
     tableRef.columns[column.index].name = newName;
+    tableRef.columns[column.index].type = type;
 
     this.tableState.set(tables);
     this.highlightedState.set(column);
