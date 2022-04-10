@@ -1,5 +1,5 @@
 import constants from '../settings/constants';
-import { DataType } from './column-type.model';
+import { ColumnData } from './column-data.model';
 import { SqlType } from './sql-type.enum';
 import { SvgPosition } from './svg-position.model';
 import { Table } from './table-svg.model';
@@ -29,5 +29,9 @@ export class Column implements SvgPosition {
     public readonly index: number,
     public readonly table: Table,
     public name: string,
-    public type: DataType = { type: SqlType.bigint }) { }
+    public data: ColumnData = { type: SqlType.bigint }) { }
+
+  public toString(): string {
+    return `${this.name} ${this.data.type}`;
+  }
 }

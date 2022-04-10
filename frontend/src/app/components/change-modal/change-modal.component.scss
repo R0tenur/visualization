@@ -8,4 +8,7 @@
   padding-top: .4rem;
   padding-bottom: .4rem;
   cursor: grab;
+  input, select {
+    width: 80%;
+  }
 }

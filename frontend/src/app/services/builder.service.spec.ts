@@ -4,6 +4,7 @@ import { builderKey } from '../models/builder.model';
 import { Column } from '../models/column.model';
 import { Highlighted, highlightedKey } from '../models/highlighted.model';
 import { Relation, relationStateKey } from '../models/relation.model';
+import { SqlType } from '../models/sql-type.enum';
 import { Table } from '../models/table-svg.model';
 import { State } from '../state/state';
 
@@ -86,7 +87,7 @@ describe('BuilderService', () => {
       const newName = 'new name';
 
       // Act
-      await service.renameTable(table, newName);
+      await service.editTable(table, newName);
 
       // Assert
       expect(tableState.set).toHaveBeenCalledWith([new Table(newName, 'dummy')]);
@@ -126,7 +127,7 @@ describe('BuilderService', () => {
 
       const column = new Column(0, table, oldName);
       // Act
-      await service.changeColumn(table, column, newName);
+      await service.editColumn(table, column, newName, { type: SqlType.bigint});
 
       // Assert
       const expected = new Table('table', 'dummy');

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { builderKey } from '../models/builder.model';
-import { DataType } from '../models/column-type.model';
+import { ColumnData } from '../models/column-data.model';
 import { Column } from '../models/column.model';
 import { Highlighted, highlightedKey } from '../models/highlighted.model';
 import { Position } from '../models/position.model';
@@ -42,7 +42,7 @@ export class BuilderService {
 
   }
 
-  public async renameTable(table: Table, newName: string): Promise<void> {
+  public async editTable(table: Table, newName: string, schema = table.schema): Promise<void> {
     const tables = await this.getTables();
     const tableIndex = tables.findIndex(t => t.name === table.name && t.schema === table.schema);
     tables[tableIndex].name = newName;
@@ -80,17 +80,30 @@ export class BuilderService {
     this.highlightedState.set(from);
   }
 
-  public async changeColumn(table: Table, column: Column, newName: string, type: DataType = column.type): Promise<void> {
+  public async editColumn(table: Table, column: Column, newName: string, data: ColumnData): Promise<void> {
+    console.log(data);
+
     const tables = await this.getTables();
 
     const tableRef = tables.find(t => t.name === table.name && t.schema === table.schema);
-    if (!tableRef) { return; }
+    if (!tableRef) {
+      console.warn('Table not found');
+      return;
+    }
+
 
     tableRef.columns[column.index].name = newName;
-    tableRef.columns[column.index].type = type;
+    tableRef.columns[column.index].data = data;
 
     this.tableState.set(tables);
     this.highlightedState.set(column);
+  }
+
+  public async export(): Promise<string> {
+    const tables = await this.getTables();
+    const sql = tables.map(x => x.toString());
+    console.log(sql);
+    return sql.join('\n');
   }
   private async getTables(): Promise<Table[]> {
     const tables = await this.tableState.select$.pipe(take(1)).toPromise();

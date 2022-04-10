@@ -21,6 +21,9 @@ export class ShortcutService implements OnDestroy {
     c: this.addColumn,
     r: () => this.highlighted instanceof Column ?
       this.relationState.set({ column: this.highlighted, position: { x: this.highlighted.x, y: this.highlighted.y } }) : null,
+    e: () => {
+      this.builderService.export().then(sql => this.window.open(`data:text/sql;charset=utf-8,${encodeURIComponent(sql)}`));
+    }
 
   };
   private shortcutsDisabled = false;

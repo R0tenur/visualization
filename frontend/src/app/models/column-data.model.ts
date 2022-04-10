@@ -1,6 +1,6 @@
 import { SqlType } from './sql-type.enum';
 
-export interface DataType {
+export interface ColumnData {
   type: SqlType;
   length?: number;
   nullable?: boolean;

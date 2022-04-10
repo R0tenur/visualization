@@ -62,37 +62,37 @@ describe('ChangeModalComponent', () => {
     });
     it('should rename table when no column', () => {
       // Arrange
-      spyOn(builderService, 'renameTable').and.returnValue(Promise.resolve());
-      spyOn(builderService, 'changeColumn').and.returnValue(Promise.resolve());
+      spyOn(builderService, 'editTable').and.returnValue(Promise.resolve());
+      spyOn(builderService, 'editColumn').and.returnValue(Promise.resolve());
       const table = new Table('table', 'dummy');
       // Act
       component.setName({ position, table }, 'new name');
       // Assert
-      expect(builderService.renameTable).toHaveBeenCalledOnceWith(table, 'new name');
-      expect(builderService.changeColumn).not.toHaveBeenCalled();
+      expect(builderService.editTable).toHaveBeenCalledOnceWith(table, 'new name');
+      expect(builderService.editColumn).not.toHaveBeenCalled();
     });
     it('should rename column when exists', () => {
       // Arrange
-      spyOn(builderService, 'renameTable').and.returnValue(Promise.resolve());
-      spyOn(builderService, 'changeColumn').and.returnValue(Promise.resolve());
+      spyOn(builderService, 'editTable').and.returnValue(Promise.resolve());
+      spyOn(builderService, 'editColumn').and.returnValue(Promise.resolve());
       const table = new Table('table', 'dummy');
       const column = new Column(0, table, 'dummy');
       // Act
       component.setName({ position, table, column }, 'new name');
       // Assert
-      expect(builderService.renameTable).not.toHaveBeenCalled();
-      expect(builderService.changeColumn).toHaveBeenCalledOnceWith(table, column, 'new name');
+      expect(builderService.editTable).not.toHaveBeenCalled();
+      expect(builderService.editColumn).toHaveBeenCalledOnceWith(table, column, 'new name');
     });
 
     it('should do nothing when no table or column', () => {
       // Arrange
-      spyOn(builderService, 'renameTable').and.returnValue(Promise.resolve());
-      spyOn(builderService, 'changeColumn').and.returnValue(Promise.resolve());
+      spyOn(builderService, 'editTable').and.returnValue(Promise.resolve());
+      spyOn(builderService, 'editColumn').and.returnValue(Promise.resolve());
       // Act
       component.setName({ position }, 'new name');
       // Assert
-      expect(builderService.renameTable).not.toHaveBeenCalled();
-      expect(builderService.changeColumn).not.toHaveBeenCalled();
+      expect(builderService.editTable).not.toHaveBeenCalled();
+      expect(builderService.editColumn).not.toHaveBeenCalled();
     });
   });
 

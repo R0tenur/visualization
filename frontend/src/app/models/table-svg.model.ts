@@ -53,5 +53,8 @@ export class Table {
     this.x = x;
     this.y = y;
   }
+  public toString(): string {
+    return `CREATE TABLE [${this.schema}].[${this.name}] (\n${this.columns.map(c => `\t${c.toString()}`).join(',\n')}\n);`;
+  }
 }
 
