@@ -71,7 +71,8 @@ const showError = (webview: DashboardWebview, error: Error) => webview.postMessa
     rawData: error.stack
 });
 const recivedMessage = async (e: any) => {
-    const selected = !e.data.chart ? 'md' : await window.showQuickPick([...['svg', 'md']]);
+    const selectable = !e.data.chart ? ['md'] : ['svg', 'md'];
+    const selected = await window.showQuickPick([...selectable]);
     let data = e.data;
     await exportService(`chart.${selected}`, data, selected);
 };
