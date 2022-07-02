@@ -1,4 +1,4 @@
-import { window } from "vscode";
+/* istanbul ignore file */
 import { dashboard, DashboardWebview } from "azdata";
 import { loadWebView } from "../web.loader";
 import { visualizationPanelName } from "../constants";
@@ -6,7 +6,7 @@ import { getMssqlDbSchema } from "../repositories/mssql.repository";
 import { chartBuilder } from "../services/builder.service";
 import { Database } from "../models/database.model";
 import { Status } from "../models/status.enum";
-import { exportService } from "../services/export.service";
+import { messageHandler } from "../message.handler";
 
 export const VisualizationController = () => {
     let counterHtml = loadWebView();
@@ -15,7 +15,7 @@ export const VisualizationController = () => {
         visualizationPanelName,
         async (webview: DashboardWebview) => {
             webview.html = counterHtml;
-            webview.onMessage(e => recivedMessage(e));
+            webview.onMessage(messageHandler);
 
             if (webview.connection.options.database) {
                 await getMermaidForDb(webview);
@@ -70,9 +70,3 @@ const showError = (webview: DashboardWebview, error: Error) => webview.postMessa
     errors: [error.message],
     rawData: error.stack
 });
-const recivedMessage = async (e: any) => {
-    const selected = !e.data.chart ? 'md' : await window.showQuickPick([...['svg', 'md']]);
-    let data = e.data;
-    await exportService(`chart.${selected}`, data, selected);
-};
-
