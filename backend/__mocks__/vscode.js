@@ -13,7 +13,8 @@ const window = {
     showWarningMessage: jest.fn(),
     showInformationMessage: jest.fn(),
     showSaveDialog: jest.fn(),
-    createTextEditorDecorationType: jest.fn()
+    createTextEditorDecorationType: jest.fn(),
+    showQuickPick: jest.fn()
 };
 
 const workspace = {
