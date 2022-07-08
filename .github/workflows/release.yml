@@ -1,0 +1,33 @@
+name: Release
+on:
+  workflow_dispatch:
+    branches: [ '*' ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Login       
+      run: gh auth login --with-token $GITHUB_TOKEN
+      env:
+       GITHUB_TOKEN: ${{ github.token }}
+    - name: Delete       
+      run: gh repo delete r0tenur/azuredatastudio || true
+    - name: Fork       
+      run: gh repo fork microsoft/azuredatastudio --clone
+    - name: Go to data studio folder
+      run: cd azuredatastudio
+    - name: Checkout extensions branch
+      run: git checkout release/extensions
+    - name: Create branch for update
+      run: git checkout -b update-schema-visualization
+    - name: Update versions
+      run: node ../.github/workflows/scripts/update-in-extension-gallery.js
+    - name: Auth to git
+      run: node ../.github/workflows/scripts/set-ssh-key.js
+    - name: Push localy
+      run: git remote set-url --push origin https://r0tenur:$GITHUB_TOKEN@github.com/r0tenur/azuredatastudio
+      env:
+       GITHUB_TOKEN: ${{ github.token }}
+
+ 
