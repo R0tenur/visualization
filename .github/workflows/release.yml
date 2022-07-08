@@ -1,5 +1,7 @@
 name: Release
-
+on:
+  workflow_dispatch:
+    branches: [ '*' ]
 jobs:
   build:
     runs-on: ubuntu-latest
