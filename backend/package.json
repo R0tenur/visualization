@@ -2,7 +2,7 @@
   "name": "schema-visualization",
   "displayName": "Schema Visualization",
   "description": "Entity relationship diagram, visualization of databases. Create ERD diagrams from a database schema. Or, create a schema from an ERD diagram.",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "publisher": "R0tenur",
   "license": "MIT",
   "icon": "logo.png",
