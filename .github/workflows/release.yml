@@ -2,15 +2,13 @@ name: Release
 on:
   workflow_dispatch:
     branches: [ '*' ]
+env:
+  GH_TOKEN: ${{ github.token }}
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Login       
-      run: gh auth login --with-token $GITHUB_TOKEN
-      env:
-       GITHUB_TOKEN: ${{ github.token }}
     - name: Delete       
       run: gh repo delete r0tenur/azuredatastudio || true
     - name: Fork       
@@ -26,8 +24,6 @@ jobs:
     - name: Auth to git
       run: node ../.github/workflows/scripts/set-ssh-key.js
     - name: Push localy
-      run: git remote set-url --push origin https://r0tenur:$GITHUB_TOKEN@github.com/r0tenur/azuredatastudio
-      env:
-       GITHUB_TOKEN: ${{ github.token }}
+      run: git remote set-url --push origin https://r0tenur:$GH_TOKEN@github.com/r0tenur/azuredatastudio
 
  
