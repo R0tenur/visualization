@@ -8,7 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      repository-projects: write
+      contents: write
+      pull-requests: write
     steps:
     - uses: actions/checkout@v1
     - name: Delete       
