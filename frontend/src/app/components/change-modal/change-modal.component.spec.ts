@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
+import { AppTestingModule } from '../../app-testing.module';
 import { Column } from '../../models/column.model';
 import { Rename, renameKey } from '../../models/rename.model';
 import { Table } from '../../models/table-svg.model';
@@ -18,6 +19,7 @@ describe('ChangeModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ChangeModalComponent],
+      imports: [AppTestingModule],
       providers: [{ provide: StateInjector(renameKey), useValue: new State<Rename>() }],
     })
       .compileComponents();
@@ -81,7 +83,7 @@ describe('ChangeModalComponent', () => {
       component.setName({ position, table, column }, 'new name');
       // Assert
       expect(builderService.editTable).not.toHaveBeenCalled();
-      expect(builderService.editColumn).toHaveBeenCalledOnceWith(table, column, 'new name');
+      expect(builderService.editColumn).toHaveBeenCalledOnceWith(table, column, 'new name', column.data);
     });
 
     it('should do nothing when no table or column', () => {

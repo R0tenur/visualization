@@ -56,7 +56,7 @@ export class ChangeModalComponent {
     this.selected = false;
     if (rename.table) {
       if (rename.column) {
-        // this.builderService.editColumn(rename.table, rename.column, newName);
+        this.builderService.editColumn(rename.table, rename.column, newName, rename.column.data);
         return;
       }
       this.builderService.editTable(rename.table, newName);
