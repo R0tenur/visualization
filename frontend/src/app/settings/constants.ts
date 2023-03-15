@@ -4,25 +4,29 @@ const border = '--vscode-editorWidget-border';
 
 const getCssVariable = (variable: string) => getComputedStyle(document.documentElement)
   .getPropertyValue(variable);
+
 export interface Constants {
   tableWidth: number;
   padding: number;
-  margin: number;
-  headerHeight: number;
+  titleMargin: number;
+  titleHeight: number;
+  columnHeight: number;
+  columnMargin: number;
   fontSize: number;
-  tablesOnRow: number;
+  borderWidth: number;
   backgroundColor: string;
   fontColor: string;
   borderColor: string;
 }
 export default {
   tableWidth: 200,
-  padding: 25,
-  margin: 30,
-  headerHeight: 60,
-  fontSize: 12,
-  tablesOnRow: 4,
-  backgroundColor: getCssVariable(background),
-  fontColor: getCssVariable(forground),
-  borderColor: getCssVariable(border),
+  padding: 18,
+  titleMargin: 30,
+  titleHeight: 25,
+  borderWidth: 2,
+  columnHeight: 20,
+  fontSize: 16,
+  backgroundColor: getCssVariable(background) || getComputedStyle(document.body).backgroundColor,
+  fontColor: getCssVariable(forground) || getComputedStyle(document.body).color,
+  borderColor: getCssVariable(border) || getComputedStyle(document.body).color,
 } as Constants;

@@ -1,0 +1,15 @@
+.relation {
+  position: absolute;
+  width: 200px;
+  z-index: 9999999;
+  border: 1px solid rgb(146, 143, 143);
+  border-radius: .5rem;
+  font-size: .8em;
+  padding-top: .4rem;
+  padding-bottom: .4rem;
+  cursor: grab;
+}
+.list {
+  width: 100%;
+
+}

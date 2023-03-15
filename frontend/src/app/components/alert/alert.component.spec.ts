@@ -3,16 +3,17 @@ import { By } from '@angular/platform-browser';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Status } from '../../../../../shared/models/status.enum';
 import { AppTestingModule } from '../../app-testing.module';
-import { ChartError } from '../../models/error.model';
-import { AlertService } from '../../services/alert.service';
+import { ChartError, ChartErrorKey } from '../../models/error.model';
 import { DataStudioService } from '../../services/data-studio.service';
+import { StateInjector } from '../../services/state.token';
+import { State } from '../../state/state';
 
 import { AlertComponent } from './alert.component';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
   let fixture: ComponentFixture<AlertComponent>;
-  let alertService: AlertService;
+  let alertService: State<ChartError>;
   let dataStudioService: DataStudioService;
   const alertSubject: Subject<ChartError> = new Subject<ChartError>();
   const markdownSubject: BehaviorSubject<string> = new BehaviorSubject<string>(undefined as any as string);
@@ -20,6 +21,7 @@ describe('AlertComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AlertComponent],
+      providers: [{ provide: StateInjector(ChartErrorKey), useValue: new State<ChartError>()}],
       imports: [AppTestingModule],
     })
     .compileComponents();
@@ -27,8 +29,8 @@ describe('AlertComponent', () => {
   afterEach(() => alertSubject.next(undefined));
 
   beforeEach(() => {
-    alertService = TestBed.inject(AlertService);
-    spyOnProperty(alertService, 'Alert$').and.returnValue(alertSubject.asObservable());
+    alertService = TestBed.inject<State<ChartError>>(StateInjector(ChartErrorKey));
+    spyOnProperty(alertService, 'select$').and.returnValue(alertSubject.asObservable());
 
     dataStudioService = TestBed.inject(DataStudioService);
     spyOnProperty(dataStudioService, 'Markdown$').and.returnValue(markdownSubject.asObservable());

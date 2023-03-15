@@ -1,22 +1,32 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Inject } from '@angular/core';
 import { DataStudioService } from './services/data-studio.service';
-import { Exportable } from './models/exportable.model';
+import { ContextMenuService } from './services/context-menu.service';
+import { StateInjector } from './services/state.token';
+import { Rename, renameKey } from './models/rename.model';
+import { State } from './state/state';
+import { AddRelation, addRelationKey } from './models/add-relation.model';
+import { shortcutsDisabledKey } from './services/shortcut.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
 
-  public get Database$(): Observable<Exportable> {
-    return this.dataStudioService.Database$;
-  }
   constructor(
-    public readonly dataStudioService: DataStudioService) { }
+    public readonly dataStudioService: DataStudioService,
+    public readonly contextMenu: ContextMenuService,
+    @Inject(StateInjector(renameKey)) private readonly rename: State<Rename>,
+    @Inject(StateInjector(addRelationKey)) private readonly addRelation: State<AddRelation>,
+    @Inject(StateInjector(shortcutsDisabledKey)) private readonly shortcutDisabledState: State<boolean>,
 
-  public exportSvg(svg: string, markdown: string): void {
-    this.dataStudioService.saveCommand({ chart: svg, mermaid: markdown });
+  ) { }
+
+  public clearOverlays(): void {
+    this.contextMenu.clear();
+    this.rename.clear();
+    this.addRelation.clear();
+    this.shortcutDisabledState.set(false);
   }
+
 }

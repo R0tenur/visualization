@@ -1,0 +1,41 @@
+<div *ngIf="state.select$ | async as rename">
+  <div class="rename" [style.background]="constants.backgroundColor" [style.top.px]="rename.position.y"
+    [style.left.px]="rename.position.x">
+
+    <!-- <input #renameInput [formControl]="renameInput" (change)="setName(rename, $event.target.value)"
+      value="{{rename.column ? rename.column.name : rename.table.name}}" type="text" /> -->
+    <div *ngIf="isColumn(rename)">
+      <div *ngIf="columnChangeGroup | async as group">
+        <form [formGroup]="group" (ngSubmit)="onColumnSubmit(rename.column, group.value)">
+          <label>
+            Name:
+            <input type="text" formControlName="name">
+          </label>
+          <label>
+            Type
+            <select formControlName="type">
+              <option *ngFor="let key of sqlTypeKeys">{{key}}</option>
+            </select>
+          </label>
+          <button type="submit">Save</button>
+        </form>
+      </div>
+    </div>
+
+    <div *ngIf="!isColumn(rename)">
+      <div *ngIf="tableChangeGroup | async as group">
+        <form type="text" [formGroup]="group" (ngSubmit)="onTableSubmit(rename.table, group)">
+          <label>
+            Schema:
+            <input formControlName="schema">
+          </label>
+          <label>
+            Name:
+            <input formControlName="name">
+          </label>
+          <button type="submit">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -4,7 +4,7 @@
 }
 
 body:not([data-vscode-theme-name]) {
-  --vscode-foreground: #ccccc;
+  --vscode-foreground: #cccccc;
   color: #cccccc;
   background-color: #282c34;
 }
@@ -18,4 +18,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.flex {
+  display: flex;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.muted {
+  color: rgb(115, 115, 115);
 }

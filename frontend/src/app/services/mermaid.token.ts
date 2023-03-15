@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { InjectionToken } from '@angular/core';
 import { Mermaid } from 'mermaid';
 import mermaid from 'mermaid';
