@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --single-bundle",
+    "build": "ng build --configuration production --single-bundle",
     "test": "ng test --browsers=ChromeHeadless --watch=false --code-coverage",
     "test:watch": "ng test --browsers=ChromeHeadless --code-coverage",
     "lint": "ng lint",
@@ -12,25 +12,25 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~11.0.4",
-    "@angular/common": "~11.0.4",
-    "@angular/compiler": "~11.0.4",
-    "@angular/core": "~11.0.4",
-    "@angular/forms": "~11.0.4",
-    "@angular/platform-browser": "~11.0.4",
-    "@angular/platform-browser-dynamic": "~11.0.4",
-    "@angular/router": "~11.0.4",
+    "@angular/animations": "~12.2.17",
+    "@angular/common": "~12.2.17",
+    "@angular/compiler": "~12.2.17",
+    "@angular/core": "~12.2.17",
+    "@angular/forms": "~12.2.17",
+    "@angular/platform-browser": "~12.2.17",
+    "@angular/platform-browser-dynamic": "~12.2.17",
+    "@angular/router": "~12.2.17",
     "mermaid": "^9.1.2",
     "ng": "^0.0.0",
     "ngx-build-plus": "^11.0.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1100.4",
-    "@angular/cli": "~11.0.4",
-    "@angular/compiler-cli": "~11.0.4",
+    "@angular-devkit/build-angular": "~12.2.18",
+    "@angular/cli": "~12.2.18",
+    "@angular/compiler-cli": "~12.2.17",
     "@types/jasmine": "~3.6.0",
     "@types/mermaid": "^8.2.2",
     "@types/node": "^12.11.1",
@@ -46,6 +46,6 @@
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.0.2"
+    "typescript": "~4.3.5"
   }
 }
