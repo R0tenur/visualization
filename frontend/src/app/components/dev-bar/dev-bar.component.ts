@@ -6,14 +6,14 @@ import { FakeDbService } from '../../services/fake-db.service';
 @Component({
   selector: 'app-dev-bar',
   templateUrl: './dev-bar.component.html',
-  styleUrls: ['./dev-bar.component.scss']
+  styleUrls: ['./dev-bar.component.scss'],
 })
-export class DevBarComponent implements OnInit {
+export class DevBarComponent {
   public numberOfTables = 10;
-  constructor(public readonly azData: DataStudioService, private readonly fakeDb: FakeDbService) { }
-
-  ngOnInit(): void {
-  }
+  constructor(
+    public readonly azData: DataStudioService,
+    private readonly fakeDb: FakeDbService
+  ) {}
 
   public async triggerFakeEvent(): Promise<void> {
     const chart = this.fakeDb.createDiagram(this.numberOfTables);
@@ -42,6 +42,6 @@ export class DevBarComponent implements OnInit {
   }
 
   private delay(milliSeconds: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, milliSeconds));
+    return new Promise((resolve) => setTimeout(resolve, milliSeconds));
   }
 }
