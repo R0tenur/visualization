@@ -7,23 +7,22 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
 
   tables.forEach((table: DatabaseTable) => {
     const columnNames: string[] = [];
-    let columString = '';
+    let columString = "";
     table.columns.forEach((column: DatabaseColumn) => {
-      if (!columnNames.find(x => x === column.name)) {
+      if (!columnNames.find((x) => x === column.name)) {
         columnNames.push(column.name);
-        columString += `${column.name}
+        columString += `${column.dataType} ${column.name} ${column.constraint}
           `;
         if (column.referenceTable) {
           tableRelations.push(
-            `${table.schema}_${table.name} --|> ${column.referenceTableSchema}_${column.referenceTable}: ${column.referenceColumn}\n`
+            `"${table.schema}.${table.name}" ||--|{ "${column.referenceTableSchema}.${column.referenceTable}": ${column.referenceColumn}\n`
           );
         }
       }
-
     });
 
     let tableString = `
-class ${table.schema}_${table.name} {
+"${table.schema}.${table.name}" {
     ${columString}
 }`;
     tableStrings.push(tableString);
@@ -35,23 +34,21 @@ class ${table.schema}_${table.name} {
 
     throw err;
   }
-  return `classDiagram
-      ${tableStrings.join('')}
-      ${tableRelations.join('')}`;
-
+  return `erDiagram
+      ${tableStrings.join("")}
+      ${tableRelations.join("")}`;
 };
 
 export const databaseListChartBuilder = (databases: string[]): any => {
-  let chartString = '';
+  let chartString = "";
 
-  databases.forEach(db => {
+  databases.forEach((db) => {
     chartString += `class ${db}{}
         `;
   });
-
   return {
-    chart: `classDiagram
-      ${chartString}
-      `
+    chart: `erDiagram
+${chartString}
+      `,
   };
 };

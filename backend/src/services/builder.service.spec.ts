@@ -1,16 +1,16 @@
 import { DatabaseTable } from "../models/database-table.model";
 import { chartBuilder } from "./builder.service";
 
-describe('chartBuilder', () => {
-  const tableName = 'dummyTable';
-  const tableSchema = 'dummyTableSchema';
-  const columnName = 'dummyColumn';
+describe("chartBuilder", () => {
+  const tableName = "dummyTable";
+  const tableSchema = "dummyTableSchema";
+  const columnName = "dummyColumn";
 
-  const anotherTableName = 'anotherDummyTable';
-  const anotherTableSchema = 'anotherDummySchema';
-  const anotherColumnName = 'anotherDummyColumn';
+  const anotherTableName = "anotherDummyTable";
+  const anotherTableSchema = "anotherDummySchema";
+  const anotherColumnName = "anotherDummyColumn";
 
-  it('throws error when no db-respone', () => {
+  it("throws error when no db-respone", () => {
     // Act
     const err = () => chartBuilder([]);
 
@@ -18,7 +18,7 @@ describe('chartBuilder', () => {
     expect(err).toThrowError();
   });
 
-  it('builds chart with uniqe columns', () => {
+  it("builds chart with uniqe columns", () => {
     // arrange
     const tablesWithMultiple: DatabaseTable[] = [
       {
@@ -26,15 +26,17 @@ describe('chartBuilder', () => {
         schema: tableSchema,
         columns: [
           {
+            dataType: "nvarchar",
             name: columnName,
-            ...emptyRelation
+            ...emptyRelation,
           },
           {
+            dataType: "nvarchar",
             name: columnName,
-            ...emptyRelation
+            ...emptyRelation,
           },
         ],
-      }
+      },
     ];
 
     // Act
@@ -44,7 +46,7 @@ describe('chartBuilder', () => {
     expect(numberOfTimesStringInString(chart, columnName)).toBe(1);
   });
 
-  it('builds chart with relations', () => {
+  it("builds chart with relations", () => {
     // arrange
     const tablesWithMultiple: DatabaseTable[] = [
       {
@@ -52,12 +54,12 @@ describe('chartBuilder', () => {
         schema: tableSchema,
         columns: [
           {
+            dataType: "nvarchar",
             name: columnName,
             referenceColumn: anotherColumnName,
             referenceTable: anotherTableName,
             referenceTableSchema: anotherTableSchema,
-            foreignKey: 'theKey'
-
+            constraint: "theKey",
           },
         ],
       },
@@ -66,15 +68,17 @@ describe('chartBuilder', () => {
         schema: anotherTableSchema,
         columns: [
           {
+            dataType: "nvarchar",
             name: columnName,
-            ...emptyRelation
+            ...emptyRelation,
           },
           {
+            dataType: "nvarchar",
             name: anotherColumnName,
-            ...emptyRelation
+            ...emptyRelation,
           },
         ],
-      }
+      },
     ];
 
     const expected = `classDiagram
@@ -99,11 +103,12 @@ class ${anotherTableSchema}_${anotherTableName} {
   });
 });
 
-
 const emptyRelation = {
-  referenceColumn: '',
-  referenceTable: '',
-  referenceTableSchema: '',
-  foreignKey: ''
+  referenceColumn: "",
+  referenceTable: "",
+  referenceTableSchema: "",
+  foreignKey: "",
+  constraint: "",
 };
-const numberOfTimesStringInString = (string: string, word: string) => string.split(word).length - 1;
+const numberOfTimesStringInString = (string: string, word: string) =>
+  string.split(word).length - 1;
