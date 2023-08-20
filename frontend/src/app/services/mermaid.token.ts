@@ -1,13 +1,9 @@
 import { InjectionToken } from '@angular/core';
-import { Mermaid } from 'mermaid';
-import mermaid from 'mermaid';
+import * as mermaid from 'mermaid';
 
-export const MERMAID = new InjectionToken<Mermaid>(
-  'Mermaid',
-  {
-    providedIn: 'root',
-    factory(): Mermaid {
-      return mermaid;
-    }
-  }
-);
+export const MERMAID = new InjectionToken<any>('Mermaid', {
+  providedIn: 'root',
+  factory(): any {
+    return mermaid.default;
+  },
+});

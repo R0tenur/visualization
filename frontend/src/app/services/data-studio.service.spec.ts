@@ -6,7 +6,6 @@ import { AlertService } from './alert.service';
 import { DataStudioService } from './data-studio.service';
 import { WINDOW } from './window.token';
 import { Subject, Subscription } from 'rxjs';
-import { Mermaid } from 'mermaid';
 import { MERMAID } from './mermaid.token';
 import { Exportable } from '../models/exportable.model';
 
@@ -14,11 +13,11 @@ describe('DataStudioService', () => {
   let dataStudioService: DataStudioService;
   let alert: AlertService;
   let windowRef: Window;
-  let mermaid: Mermaid;
+  let mermaid: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [AppTestingModule]
+      imports: [AppTestingModule],
     });
     alert = TestBed.inject(AlertService);
     windowRef = TestBed.inject(WINDOW);
@@ -31,14 +30,15 @@ describe('DataStudioService', () => {
   });
 
   describe('isInDataStudio', () => {
-
     it('should return false when not in data studio', () => {
       // Arrange
-      spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
-        {
-          hasAttribute: (attribute: string) => false,
-        },
-      ] as any as HTMLCollectionOf<Element>);
+      spyOn(windowRef.document, 'getElementsByTagName')
+        .withArgs('body')
+        .and.returnValue([
+          {
+            hasAttribute: (attribute: string) => false,
+          },
+        ] as any as HTMLCollectionOf<Element>);
 
       // Act
       const isInDataStudio = dataStudioService.isInDataStudio();
@@ -49,11 +49,13 @@ describe('DataStudioService', () => {
 
     it('should return true when in data studio', () => {
       // Arrange
-      spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
-        {
-          hasAttribute: (attribute: string) => true,
-        },
-      ] as any as HTMLCollectionOf<Element>);
+      spyOn(windowRef.document, 'getElementsByTagName')
+        .withArgs('body')
+        .and.returnValue([
+          {
+            hasAttribute: (attribute: string) => true,
+          },
+        ] as any as HTMLCollectionOf<Element>);
 
       // Act
       const isInDataStudio = dataStudioService.isInDataStudio();
@@ -64,14 +66,15 @@ describe('DataStudioService', () => {
   });
 
   describe('isDarkMode', () => {
-
     it('should return false when not in data studio', () => {
       // Arrange
-      spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
-        {
-          getAttribute: (attribute: string) => 'dummy',
-        },
-      ] as any as HTMLCollectionOf<Element>);
+      spyOn(windowRef.document, 'getElementsByTagName')
+        .withArgs('body')
+        .and.returnValue([
+          {
+            getAttribute: (attribute: string) => 'dummy',
+          },
+        ] as any as HTMLCollectionOf<Element>);
 
       // Act
       const isDarkmode = dataStudioService.isDarkMode();
@@ -82,11 +85,13 @@ describe('DataStudioService', () => {
 
     it('should return true when in data studio', () => {
       // Arrange
-      spyOn(windowRef.document, 'getElementsByTagName').withArgs('body').and.returnValue([
-        {
-          getAttribute: (attribute: string) => 'vscode-dark',
-        },
-      ] as any as HTMLCollectionOf<Element>);
+      spyOn(windowRef.document, 'getElementsByTagName')
+        .withArgs('body')
+        .and.returnValue([
+          {
+            getAttribute: (attribute: string) => 'vscode-dark',
+          },
+        ] as any as HTMLCollectionOf<Element>);
 
       // Act
       const isDarkMode = dataStudioService.isDarkMode();
@@ -107,7 +112,7 @@ describe('DataStudioService', () => {
     const event = createEvent({
       status,
       errors,
-      rawData
+      rawData,
     });
 
     // Act
@@ -115,14 +120,20 @@ describe('DataStudioService', () => {
     tick();
 
     // Assert
-    expect(alert.showError).toHaveBeenCalledWith({ status, errors, rawData: JSON.stringify(rawData) });
+    expect(alert.showError).toHaveBeenCalledWith({
+      status,
+      errors,
+      rawData: JSON.stringify(rawData),
+    });
     statusSubscription.unsubscribe();
   }));
   describe('Database$', () => {
     let database: Exportable;
     let databaseSubscription: Subscription;
     beforeEach(() => {
-      databaseSubscription = dataStudioService.Database$.subscribe(e => database = e);
+      databaseSubscription = dataStudioService.Database$.subscribe(
+        (e: Exportable) => (database = e)
+      );
     });
     afterEach(() => {
       if (databaseSubscription) {
@@ -162,7 +173,6 @@ describe('DataStudioService', () => {
       const event = createEvent({
         status: Status.Complete,
         chart: markdown,
-
       });
 
       // Act
@@ -180,21 +190,17 @@ describe('DataStudioService', () => {
     return event as Event;
   };
   const createFakeRenderCallback = (returnedSvg: string) => {
-    const fakeCallback =
-      (
-        _: string,
-        __: string,
-        cb?: (
-          svgCode: string,
-          bindFunctions: (element: Element) => void
-        ) => void) => {
-        if (cb) {
-          cb(returnedSvg, (element: Element) => { });
-        }
-        return '';
-      };
+    const fakeCallback = (
+      _: string,
+      __: string,
+      cb?: (svgCode: string, bindFunctions: (element: Element) => void) => void
+    ) => {
+      if (cb) {
+        cb(returnedSvg, (element: Element) => {});
+      }
+      return '';
+    };
 
     return fakeCallback;
-
   };
 });
