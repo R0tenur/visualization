@@ -29,28 +29,12 @@ const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
   for (let index = 0; index < dbResult.length; index++) {
     const element = dbResult[index];
     const columnToAdd = {
-      dataType:
-        element.DATA_TYPE +
-        (element.CHARACTER_MAXIMUM_LENGTH
-          ? "(" + element.CHARACTER_MAXIMUM_LENGTH + ")"
-          : ""),
+      dataType: formatDatatype(element),
       name: element.COLUMN_NAME,
       referenceColumn: element.REFERENCE_COLUMN,
       referenceTable: element.REFERENCE_TO_TABLE,
       referenceTableSchema: element.REFERENCE_TO_TABLE_SCHEMA,
-      constraint:
-        element.CONSTRAINT_TYPE?.split(",")
-          .map((c) => {
-            return c === "PRIMARY KEY"
-              ? "PK"
-              : c === "FOREIGN KEY"
-              ? "FK"
-              : c === "CHECK"
-              ? ""
-              : c;
-          })
-          .filter((c) => !!c)
-          .join(", ") || "",
+      constraint: formatConstraints(element),
     };
     const existing = result.find(
       (t) => t.name === element.TABLE_NAME && t.schema === element.TABLE_SCHEMA
@@ -80,6 +64,26 @@ export const listDatabases = async (
     databaseListQuery
   );
 };
+
+const formatDatatype = (element: DbResponse) =>
+  element.DATA_TYPE +
+  (element.CHARACTER_MAXIMUM_LENGTH
+    ? "(" + element.CHARACTER_MAXIMUM_LENGTH + ")"
+    : "");
+
+const formatConstraints = (element: DbResponse) =>
+  element.CONSTRAINT_TYPE?.split(",")
+    .map((c) =>
+      c === "PRIMARY KEY"
+        ? "PK"
+        : c === "FOREIGN KEY"
+        ? "FK"
+        : c === "CHECK"
+        ? ""
+        : c
+    )
+    .filter((c) => !!c)
+    .join(", ") || "";
 
 const databaseListQuery = `
     USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')
