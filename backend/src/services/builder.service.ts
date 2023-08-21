@@ -7,23 +7,27 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
 
   tables.forEach((table: DatabaseTable) => {
     const columnNames: string[] = [];
-    let columString = '';
+    let columString = "";
     table.columns.forEach((column: DatabaseColumn) => {
-      if (!columnNames.find(x => x === column.name)) {
+      if (!columnNames.find((x) => x === column.name)) {
         columnNames.push(column.name);
-        columString += `${column.name}
+        columString += `${column.dataType} ${column.name.replace(
+          " ",
+          "-"
+        )} "${formatConstraints(column.constraints)}"
           `;
         if (column.referenceTable) {
           tableRelations.push(
-            `${table.schema}_${table.name} --|> ${column.referenceTableSchema}_${column.referenceTable}: ${column.referenceColumn}\n`
+            `"${table.schema}.${table.name}" ${getRelation(column)} "${
+              column.referenceTableSchema
+            }.${column.referenceTable}": "${column.referenceColumn}"\n`
           );
         }
       }
-
     });
 
     let tableString = `
-class ${table.schema}_${table.name} {
+"${table.schema}.${table.name}" {
     ${columString}
 }`;
     tableStrings.push(tableString);
@@ -35,23 +39,25 @@ class ${table.schema}_${table.name} {
 
     throw err;
   }
-  return `classDiagram
-      ${tableStrings.join('')}
-      ${tableRelations.join('')}`;
-
+  return `erDiagram
+      ${tableStrings.join("")}
+      ${tableRelations.join("")}`;
 };
 
-export const databaseListChartBuilder = (databases: string[]): any => {
-  let chartString = '';
+const getRelation = (column: DatabaseColumn) => {
+  if (column.nullable) {
+    return "|o--|{";
+  }
 
-  databases.forEach(db => {
-    chartString += `class ${db}{}
-        `;
-  });
+  if (column.constraints.includes("UNIQUE")) {
+    return "||--||";
+  }
 
-  return {
-    chart: `classDiagram
-      ${chartString}
-      `
-  };
+  return "||--|{";
 };
+
+const formatConstraints = (element?: string[]) =>
+  element
+    ?.map((c) => (c === "PRIMARY KEY" ? "PK" : c === "FOREIGN KEY" ? "FK" : ""))
+    .filter((c) => !!c)
+    .join(", ") || "";

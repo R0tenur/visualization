@@ -1,16 +1,16 @@
 import { DatabaseTable } from "../models/database-table.model";
 import { chartBuilder } from "./builder.service";
 
-describe('chartBuilder', () => {
-  const tableName = 'dummyTable';
-  const tableSchema = 'dummyTableSchema';
-  const columnName = 'dummyColumn';
+describe("chartBuilder", () => {
+  const tableName = "dummyTable";
+  const tableSchema = "dummyTableSchema";
+  const columnName = "dummyColumn";
 
-  const anotherTableName = 'anotherDummyTable';
-  const anotherTableSchema = 'anotherDummySchema';
-  const anotherColumnName = 'anotherDummyColumn';
+  const anotherTableName = "anotherDummyTable";
+  const anotherTableSchema = "anotherDummySchema";
+  const anotherColumnName = "anotherDummyColumn";
 
-  it('throws error when no db-respone', () => {
+  it("throws error when no db-respone", () => {
     // Act
     const err = () => chartBuilder([]);
 
@@ -18,7 +18,7 @@ describe('chartBuilder', () => {
     expect(err).toThrowError();
   });
 
-  it('builds chart with uniqe columns', () => {
+  it("builds chart with uniqe columns", () => {
     // arrange
     const tablesWithMultiple: DatabaseTable[] = [
       {
@@ -26,15 +26,17 @@ describe('chartBuilder', () => {
         schema: tableSchema,
         columns: [
           {
+            dataType: "nvarchar",
             name: columnName,
-            ...emptyRelation
+            ...emptyRelation,
           },
           {
+            dataType: "nvarchar",
             name: columnName,
-            ...emptyRelation
+            ...emptyRelation,
           },
         ],
-      }
+      },
     ];
 
     // Act
@@ -44,66 +46,82 @@ describe('chartBuilder', () => {
     expect(numberOfTimesStringInString(chart, columnName)).toBe(1);
   });
 
-  it('builds chart with relations', () => {
-    // arrange
-    const tablesWithMultiple: DatabaseTable[] = [
-      {
-        name: tableName,
-        schema: tableSchema,
-        columns: [
-          {
-            name: columnName,
-            referenceColumn: anotherColumnName,
-            referenceTable: anotherTableName,
-            referenceTableSchema: anotherTableSchema,
-            foreignKey: 'theKey'
+  [
+    { kind: "one to many", md: "||--|{", replaceColumn: {} },
+    { kind: "zero to many", md: "|o--|{", replaceColumn: { nullable: true } },
+    {
+      kind: "one to one",
+      md: "||--||",
+      replaceColumn: { constraints: ["PRIMARY KEY", "FOREIGN KEY", "UNIQUE"] },
+    },
+  ].forEach((element) => {
+    it(`builds chart with ${element.kind} relations`, () => {
+      // arrange
+      const tablesWithMultiple: DatabaseTable[] = [
+        {
+          name: tableName,
+          schema: tableSchema,
+          columns: [
+            {
+              dataType: "nvarchar",
+              name: columnName,
+              referenceColumn: anotherColumnName,
+              referenceTable: anotherTableName,
+              referenceTableSchema: anotherTableSchema,
+              nullable: false,
+              constraints: ["PRIMARY KEY", "FOREIGN KEY"],
+              ...element.replaceColumn,
+            },
+          ],
+        },
+        {
+          name: anotherTableName,
+          schema: anotherTableSchema,
+          columns: [
+            {
+              dataType: "nvarchar",
+              name: columnName,
+              ...emptyRelation,
+            },
+            {
+              dataType: "nvarchar",
+              name: anotherColumnName,
+              ...emptyRelation,
+            },
+          ],
+        },
+      ];
 
-          },
-        ],
-      },
-      {
-        name: anotherTableName,
-        schema: anotherTableSchema,
-        columns: [
-          {
-            name: columnName,
-            ...emptyRelation
-          },
-          {
-            name: anotherColumnName,
-            ...emptyRelation
-          },
-        ],
-      }
-    ];
-
-    const expected = `classDiagram
+      const expected = `erDiagram
       
-class ${tableSchema}_${tableName} {
-    ${columnName}
+"${tableSchema}.${tableName}" {
+    nvarchar ${columnName} "PK, FK"
           
 }
-class ${anotherTableSchema}_${anotherTableName} {
-    ${columnName}
-          ${anotherColumnName}
+"${anotherTableSchema}.${anotherTableName}" {
+    nvarchar ${columnName} ""
+          nvarchar ${anotherColumnName} ""
           
 }
-      ${tableSchema}_${tableName} --|> ${anotherTableSchema}_${anotherTableName}: ${anotherColumnName}
+      "${tableSchema}.${tableName}" ${element.md} "${anotherTableSchema}.${anotherTableName}": "${anotherColumnName}"
 `;
 
-    // Act
-    const chart = chartBuilder(tablesWithMultiple);
+      // Act
+      const chart = chartBuilder(tablesWithMultiple);
 
-    // Assert
-    expect(chart).toEqual(expected);
+      // Assert
+      expect(chart).toEqual(expected);
+    });
   });
 });
 
-
 const emptyRelation = {
-  referenceColumn: '',
-  referenceTable: '',
-  referenceTableSchema: '',
-  foreignKey: ''
+  referenceColumn: "",
+  referenceTable: "",
+  referenceTableSchema: "",
+  foreignKey: "",
+  nullable: false,
+  constraints: [],
 };
-const numberOfTimesStringInString = (string: string, word: string) => string.split(word).length - 1;
+const numberOfTimesStringInString = (string: string, word: string) =>
+  string.split(word).length - 1;
