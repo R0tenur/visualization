@@ -12,3 +12,11 @@ export interface DbResponse {
   FOREIGN_KEY: string;
   CONSTRAINT_TYPE: string;
 }
+
+export interface DbViewResponse {
+  TABLE_NAME: string;
+  TABLE_SCHEMA: string;
+  COLUMN_NAME: string;
+  VIEW_SCHEMA: string;
+  VIEW_NAME: string;
+}

@@ -103,7 +103,7 @@ describe("chartBuilder", () => {
           nvarchar ${anotherColumnName} ""
           
 }
-      "${tableSchema}.${tableName}" ${element.md} "${anotherTableSchema}.${anotherTableName}": ${anotherColumnName}
+      "${tableSchema}.${tableName}" ${element.md} "${anotherTableSchema}.${anotherTableName}": "${anotherColumnName}"
 `;
 
       // Act

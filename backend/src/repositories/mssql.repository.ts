@@ -2,7 +2,9 @@ import { Database } from "../models/database.model";
 import { DatabaseTable } from "../models/database-table.model";
 import * as base from "./base.repository";
 import { Provider } from "../models/provider.enum";
-import { DbResponse } from "../models/db-response.model";
+import { DbResponse, DbViewResponse } from "../models/db-response.model";
+import { DatabaseColumn } from "../models/database-column.model";
+import { table } from "console";
 
 export const getMssqlDbSchema = async (
   connectionId: string,
@@ -19,8 +21,16 @@ export const getMssqlDbSchema = async (
     databaseName,
     informationsSchemaQuery
   );
-
   db.tables = toTables(dbEntry);
+  let dbViewEntry = await base.runQuery<DbViewResponse>(
+    Provider.MSSQL,
+    connectionId,
+    databaseName,
+    viewQuery
+  );
+
+  db.tables = db.tables.concat(toViews(dbViewEntry));
+
   return db;
 };
 
@@ -28,7 +38,7 @@ const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
   const result: DatabaseTable[] = [];
   for (let index = 0; index < dbResult.length; index++) {
     const element = dbResult[index];
-    const columnToAdd = {
+    const columnToAdd: DatabaseColumn = {
       dataType: formatDatatype(element),
       name: element.COLUMN_NAME,
       referenceColumn: element.REFERENCE_COLUMN,
@@ -47,6 +57,56 @@ const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
       result.push({
         name: element.TABLE_NAME,
         schema: element.TABLE_SCHEMA,
+        columns: [columnToAdd],
+      });
+    }
+  }
+  return result;
+};
+const toViews = (dbResult: DbViewResponse[]): DatabaseTable[] => {
+  const result: DatabaseTable[] = [];
+  const relations = [];
+  for (let index = 0; index < dbResult.length; index++) {
+    const element = dbResult[index];
+    const columnToAdd: DatabaseColumn = {
+      dataType: `${element.TABLE_SCHEMA}_${element.TABLE_NAME}`,
+      name: element.COLUMN_NAME,
+      referenceColumn: "",
+      referenceTable: "",
+      referenceTableSchema: "",
+      constraints: [],
+      nullable: false,
+    };
+    const existing = result.find(
+      (t) =>
+        t.name === element.VIEW_NAME &&
+        t.schema === "View: " + element.VIEW_SCHEMA
+    );
+
+    const relationExists = relations.find(
+      (r) =>
+        r.schema === element.TABLE_SCHEMA && table.name === element.TABLE_NAME
+    );
+
+    if (!relationExists) {
+      columnToAdd.referenceTable = element.TABLE_NAME;
+      columnToAdd.referenceTableSchema = element.TABLE_SCHEMA;
+      columnToAdd.referenceColumn =
+        element.VIEW_NAME + " => " + element.TABLE_NAME;
+      columnToAdd.constraints = ["UNIQUE"];
+
+      relations.push({
+        schema: element.TABLE_SCHEMA,
+        name: element.TABLE_NAME,
+      });
+    }
+
+    if (existing) {
+      existing.columns.push(columnToAdd);
+    } else {
+      result.push({
+        name: element.VIEW_NAME,
+        schema: "View: " + element.VIEW_SCHEMA,
         columns: [columnToAdd],
       });
     }
@@ -115,3 +175,5 @@ LEFT OUTER JOIN (
     FK.REFERENCE_FROM_TABLE = T.TABLE_NAME AND
     FK.REFERENCE_FROM_COLUMN = Columns.COLUMN_NAME
 WHERE T.TABLE_TYPE='BASE TABLE'`;
+
+const viewQuery = `SELECT VIEW_SCHEMA, VIEW_NAME, COLUMN_NAME, TABLE_SCHEMA, TABLE_NAME FROM INFORMATION_SCHEMA.VIEW_COLUMN_USAGE`;

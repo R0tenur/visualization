@@ -19,7 +19,7 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
           tableRelations.push(
             `"${table.schema}.${table.name}" ${getRelation(column)} "${
               column.referenceTableSchema
-            }.${column.referenceTable}": ${column.referenceColumn}\n`
+            }.${column.referenceTable}": "${column.referenceColumn}"\n`
           );
         }
       }
