@@ -2,7 +2,7 @@
   "name": "schema-visualization",
   "displayName": "Schema Visualization",
   "description": "Erd, Er-diagram. Visualization of databases",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "publisher": "R0tenur",
   "license": "MIT",
   "icon": "logo.png",
