@@ -11,11 +11,15 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
     table.columns.forEach((column: DatabaseColumn) => {
       if (!columnNames.find((x) => x === column.name)) {
         columnNames.push(column.name);
-        columString += `${column.dataType} ${column.name} ${column.constraint}
+        columString += `${column.dataType} ${column.name} "${formatConstraints(
+          column.constraints
+        )}"
           `;
         if (column.referenceTable) {
           tableRelations.push(
-            `"${table.schema}.${table.name}" ||--|{ "${column.referenceTableSchema}.${column.referenceTable}": ${column.referenceColumn}\n`
+            `"${table.schema}.${table.name}" ${getRelation(column)} "${
+              column.referenceTableSchema
+            }.${column.referenceTable}": ${column.referenceColumn}\n`
           );
         }
       }
@@ -39,16 +43,20 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
       ${tableRelations.join("")}`;
 };
 
-export const databaseListChartBuilder = (databases: string[]): any => {
-  let chartString = "";
+const getRelation = (column: DatabaseColumn) => {
+  if (column.nullable) {
+    return "|o--|{";
+  }
 
-  databases.forEach((db) => {
-    chartString += `class ${db}{}
-        `;
-  });
-  return {
-    chart: `erDiagram
-${chartString}
-      `,
-  };
+  if (column.constraints.includes("UNIQUE")) {
+    return "||--||";
+  }
+
+  return "||--|{";
 };
+
+const formatConstraints = (element?: string[]) =>
+  element
+    ?.map((c) => (c === "PRIMARY KEY" ? "PK" : c === "FOREIGN KEY" ? "FK" : ""))
+    .filter((c) => !!c)
+    .join(", ") || "";

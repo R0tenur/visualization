@@ -5,5 +5,6 @@ export interface DatabaseColumn {
   referenceColumn: string;
   referenceTable: string;
   referenceTableSchema: string;
-  constraint: string;
+  constraints: string[];
+  nullable: boolean;
 }

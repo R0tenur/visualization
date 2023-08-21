@@ -34,7 +34,8 @@ const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
       referenceColumn: element.REFERENCE_COLUMN,
       referenceTable: element.REFERENCE_TO_TABLE,
       referenceTableSchema: element.REFERENCE_TO_TABLE_SCHEMA,
-      constraint: formatConstraints(element),
+      constraints: element.CONSTRAINT_TYPE?.split(",") || [],
+      nullable: element.IS_NULLABLE === "YES",
     };
     const existing = result.find(
       (t) => t.name === element.TABLE_NAME && t.schema === element.TABLE_SCHEMA
@@ -71,20 +72,6 @@ const formatDatatype = (element: DbResponse) =>
     ? "(" + element.CHARACTER_MAXIMUM_LENGTH + ")"
     : "");
 
-const formatConstraints = (element: DbResponse) =>
-  element.CONSTRAINT_TYPE?.split(",")
-    .map((c) =>
-      c === "PRIMARY KEY"
-        ? "PK"
-        : c === "FOREIGN KEY"
-        ? "FK"
-        : c === "CHECK"
-        ? ""
-        : c
-    )
-    .filter((c) => !!c)
-    .join(", ") || "";
-
 const databaseListQuery = `
     USE MASTER SELECT name FROM master.sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')
   `;
@@ -95,6 +82,7 @@ T.TABLE_SCHEMA,
 Columns.COLUMN_NAME,
 Columns.DATA_TYPE,
 Columns.CHARACTER_MAXIMUM_LENGTH,
+IS_NULLABLE,
 FK.REFERENCE_TO_TABLE,
 FK.REFERENCE_TO_TABLE_SCHEMA,
 FK.REFERENCE_COLUMN,

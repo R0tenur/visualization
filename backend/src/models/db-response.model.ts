@@ -5,6 +5,7 @@ export interface DbResponse {
   COLUMN_NAME: string;
   DATA_TYPE: string;
   CHARACTER_MAXIMUM_LENGTH: string;
+  IS_NULLABLE: string;
   REFERENCE_TO_TABLE: string;
   REFERENCE_COLUMN: string;
   REFERENCE_TO_TABLE_SCHEMA: string;
