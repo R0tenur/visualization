@@ -108,6 +108,7 @@ export class DataStudioService {
     this.mermaid.initialize({
       startOnLoad: false,
       maxTextSize: 1000000,
+      useMaxWidth: true,
       theme: this.isDarkMode() ? 'dark' : 'neutral',
     });
   }

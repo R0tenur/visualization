@@ -1,8 +1,6 @@
-<app-button (clicked)="resetZoom()">Reset zoom</app-button>
-<hr>
-<div class="zoom-container">
- <input type="range" class="zoom" (change)="refreshZoom()" [(ngModel)]="scale" min="0.1" max="2" step="0.1" />
-</div>
-
-<div class="svg-container" #svgContainer *ngIf="svg" [innerHtml]="safeSvg">
-</div>
+<div
+  class="svg-container"
+  #svgContainer
+  *ngIf="svg"
+  [innerHtml]="safeSvg"
+></div>
