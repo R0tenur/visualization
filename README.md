@@ -2,8 +2,11 @@
 [![codecov](https://codecov.io/gh/R0tenur/visualization/branch/master/graph/badge.svg?token=COOVEK6DW1)](https://codecov.io/gh/R0tenur/visualization)
 # Schema Visualization
 
-Visulizes databases in "Azure data studio" using mermaid.js
+Er diagram in "Azure data studio" using mermaid.js
 
+:warning: **This project has no serious testing**: _I just do some development when I think it's fun_
+
+**Only MSSQL are supported**
 ## Features
 
 - Show database schema
