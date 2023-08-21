@@ -11,9 +11,10 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
     table.columns.forEach((column: DatabaseColumn) => {
       if (!columnNames.find((x) => x === column.name)) {
         columnNames.push(column.name);
-        columString += `${column.dataType} ${column.name} "${formatConstraints(
-          column.constraints
-        )}"
+        columString += `${column.dataType} ${column.name.replace(
+          " ",
+          "-"
+        )} "${formatConstraints(column.constraints)}"
           `;
         if (column.referenceTable) {
           tableRelations.push(
