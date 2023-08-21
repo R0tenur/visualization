@@ -66,8 +66,7 @@ const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
 const toViews = (dbResult: DbViewResponse[]): DatabaseTable[] => {
   const result: DatabaseTable[] = [];
   const relations = [];
-  for (let index = 0; index < dbResult.length; index++) {
-    const element = dbResult[index];
+  for (const element of dbResult) {
     const columnToAdd: DatabaseColumn = {
       dataType: `${element.TABLE_SCHEMA}_${element.TABLE_NAME}`,
       name: element.COLUMN_NAME,

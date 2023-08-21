@@ -33,7 +33,7 @@ it("maps db response to tables", async () => {
   );
 
   // Act
-  var result = await getMssqlDbSchema("dummyId", "dummyName");
+  const result = await getMssqlDbSchema("dummyId", "dummyName");
 
   // Asser
   expect(result.tables).toHaveLength(1);
@@ -74,7 +74,7 @@ it("maps db views to tables", async () => {
   );
 
   // Act
-  var result = await getMssqlDbSchema("dummyId", "dummyName");
+  const result = await getMssqlDbSchema("dummyId", "dummyName");
 
   // Asser
   expect(result.tables).toHaveLength(1);
