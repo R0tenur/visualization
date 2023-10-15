@@ -9,6 +9,8 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
     const columnNames: string[] = [];
     let columString = "";
     table.columns.forEach((column: DatabaseColumn) => {
+      column.name = formatColumnName(column.name);
+      column.referenceColumn = formatColumnName(column.referenceColumn);
       if (!columnNames.find((x) => x === column.name)) {
         columnNames.push(column.name);
         columString += `${column.dataType} ${column.name.replace(
@@ -61,3 +63,15 @@ const formatConstraints = (element?: string[]) =>
     ?.map((c) => (c === "PRIMARY KEY" ? "PK" : c === "FOREIGN KEY" ? "FK" : ""))
     .filter((c) => !!c)
     .join(", ") || "";
+
+const formatColumnName = (name: string) => {
+  if (!name) {
+    return name;
+  }
+
+  if (/^\d/.test(name)) {
+    name = `_${name}`;
+  }
+
+  return name.replace(" ", "_").replace("/", "_");
+};
