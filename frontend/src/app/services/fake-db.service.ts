@@ -25,7 +25,7 @@ export class FakeDbService {
       if (index > 0) {
         // tslint:disable-next-line:no-bitwise
         relations += `${tableName}-- |> ${
-          tableNames[~~(Math.random() * tableNames.length)]
+          tableNames[~~(Math.random() * tableNames.length)] // NOSONAR  just a testing file
         }
 `;
       }
