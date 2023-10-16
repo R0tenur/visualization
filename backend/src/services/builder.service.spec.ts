@@ -18,6 +18,29 @@ describe("chartBuilder", () => {
     expect(err).toThrowError();
   });
 
+  it("prepend column with _ when column name starts with number", () => {
+    // Arrange
+    const table: DatabaseTable[] = [
+      {
+        name: tableName,
+        schema: tableSchema,
+        columns: [
+          {
+            dataType: "nvarchar",
+            name: "1" + columnName,
+            ...emptyRelation,
+          },
+        ],
+      },
+    ];
+
+    // Act
+    const chart = chartBuilder(table);
+
+    // Asser
+    expect(numberOfTimesStringInString(chart, "1" + columnName)).toBe(1);
+  });
+
   it("builds chart with uniqe columns", () => {
     // arrange
     const tablesWithMultiple: DatabaseTable[] = [

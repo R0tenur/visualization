@@ -1,12 +1,14 @@
-/* istanbul ignore */
+/* istanbul ignore file */
+// Ignore since only used for local testing
+
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FakeDbService {
   private readonly header = 'classDiagram';
-  constructor() { }
+  constructor() {}
 
   public createDiagram(numberOfTables: number): string {
     const tables: string[] = [];
@@ -22,7 +24,9 @@ export class FakeDbService {
       `);
       if (index > 0) {
         // tslint:disable-next-line:no-bitwise
-        relations += `${tableName}-- |> ${tableNames[~~(Math.random() * tableNames.length)]}
+        relations += `${tableName}-- |> ${
+          tableNames[~~(Math.random() * tableNames.length)] // NOSONAR  just a testing file
+        }
 `;
       }
     }
@@ -42,6 +46,4 @@ export class FakeDbService {
   private randomString(): string {
     return (Math.random() + 1).toString(36).substring(7);
   }
-
 }
-
