@@ -1,5 +1,12 @@
 ![GitHub All Releases](https://img.shields.io/github/downloads/r0tenur/visualization/total)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=R0tenur_visualization&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=R0tenur_visualization)
 [![codecov](https://codecov.io/gh/R0tenur/visualization/branch/master/graph/badge.svg?token=COOVEK6DW1)](https://codecov.io/gh/R0tenur/visualization)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=R0tenur_visualization&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=R0tenur_visualization)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=R0tenur_visualization&metric=bugs)](https://sonarcloud.io/summary/new_code?id=R0tenur_visualization)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=R0tenur_visualization&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=R0tenur_visualization)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=R0tenur_visualization&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=R0tenur_visualization)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=R0tenur_visualization&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=R0tenur_visualization)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=R0tenur_visualization&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=R0tenur_visualization)
 # Schema Visualization
 
 Er diagram in "Azure data studio" using mermaid.js
