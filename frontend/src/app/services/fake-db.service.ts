@@ -39,11 +39,12 @@ export class FakeDbService {
   private randomColumns(): string {
     let columns = '';
     for (let index = 0; index < Math.random() * 10 + 1; index++) {
+      // NOSONSAR Just for testing
       columns += this.randomString() + '\n';
     }
     return columns;
   }
   private randomString(): string {
-    return (Math.random() + 1).toString(36).substring(7);
+    return (Math.random() + 1).toString(36).substring(7); // NOSONAR Just for testing
   }
 }

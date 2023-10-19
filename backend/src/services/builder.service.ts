@@ -35,7 +35,7 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
     tableStrings.push(tableString);
   });
   if (tableStrings.length === 0) {
-    var err = new Error("Could not build mermaid from db response");
+    const err = new Error("Could not build mermaid from db response");
     err.stack = `Db-response:
     ${JSON.stringify(tables)}`;
 

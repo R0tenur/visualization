@@ -12,7 +12,7 @@ export class MermaidViewerComponent implements OnInit, AfterViewInit {
 
   constructor(public readonly sanitizer: DomSanitizer) {}
   ngOnInit(): void {
-    this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(this.svg);
+    this.safeSvg = this.sanitizer.bypassSecurityTrustHtml(this.svg); // NOSONAR HTML is sanitized by Mermaid
   }
   public ngAfterViewInit(): void {
     const svgs = d3.selectAll('.svg-container svg');

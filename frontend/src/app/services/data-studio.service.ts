@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { Inject, Injectable } from '@angular/core';
 import { concat, fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
@@ -6,6 +7,7 @@ import { AlertService } from './alert.service';
 import { Exportable } from '../models/exportable.model';
 import { WINDOW } from './window.token';
 import { MERMAID } from './mermaid.token';
+import { ViewOptions } from '@shared/models/options.model';
 declare const acquireVsCodeApi: () => {
   postMessage: (message: any) => void;
 };
@@ -44,6 +46,7 @@ export class DataStudioService {
   private readonly databaseName$: Observable<string>;
   private readonly status$: Observable<Status>;
   private readonly markdown$ = new ReplaySubject<string>();
+  private readonly db$ = new ReplaySubject<Exportable>();
   private readonly vscode = this.isInDataStudio()
     ? acquireVsCodeApi()
     : {
@@ -73,7 +76,11 @@ export class DataStudioService {
     this.database$ = azEvent$.pipe(
       filter((event) => event.data?.status === Status.Complete),
       map((event) => event.data?.chart),
-      switchMap((r) => this.buildSvg(r))
+      switchMap((r) => this.buildSvg(r)),
+      switchMap((r) => {
+        this.db$.next(r);
+        return this.db$;
+      })
     );
 
     this.databaseName$ = azEvent$.pipe(
@@ -102,6 +109,16 @@ export class DataStudioService {
         data: message,
       },
     });
+  }
+
+  public loadCommand(options: ViewOptions): void {
+    this.vscode.postMessage({
+      ...{
+        command: 'load',
+        options,
+      },
+    });
+    this.db$.next();
   }
 
   private initializeMermaid(): void {

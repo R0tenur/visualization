@@ -1,7 +1,7 @@
-import { ExtensionContext } from 'vscode';
-import { VisualizationController } from './controllers/visualization.controller';
+import { ExtensionContext } from "vscode";
+import { VisualizationController } from "./controllers/visualization.controller";
 
-export const activate = (context: ExtensionContext) => VisualizationController();
+export const activate = (context: ExtensionContext) =>
+  VisualizationController();
 
-export const deactivate = () => { };
-
+export const deactivate = () => {}; // NOSONAR Needed for Azure Data Studio
