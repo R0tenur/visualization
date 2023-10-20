@@ -60,7 +60,8 @@ const getRelation = (column: DatabaseColumn) => {
 
 const formatConstraints = (element?: string[]) =>
   element
-    ?.map((c) => (c === "PRIMARY KEY" ? "PK" : c === "FOREIGN KEY" ? "FK" : ""))
+    ?.map((c) => (c === "PRIMARY KEY" ? "PK" : c))
+    ?.map((c) => (c === "FOREIGN KEY" ? "FK" : ""))
     .filter((c) => !!c)
     .join(", ") || "";
 
