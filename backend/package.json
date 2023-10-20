@@ -2,7 +2,7 @@
   "name": "schema-visualization",
   "displayName": "Schema Visualization",
   "description": "Erd, Er-diagram. Visualization of databases",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "publisher": "R0tenur",
   "license": "MIT",
   "icon": "logo.png",
@@ -40,7 +40,6 @@
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "proposedapi": "node installTypings.js",
     "pack": "vsce package",
     "test": "jest --config=jest.config.js"
   },
