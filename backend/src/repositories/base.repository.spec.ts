@@ -12,6 +12,12 @@ describe("baseRepository", () => {
     const connectionUri = "connectionUri";
 
     const changeDatabase = jest.fn();
+    const runQueryAndReturnSpy = jest.fn((connectionUri, query) =>
+      Promise.resolve({
+        rows: [[{ displayValue: "displayValue" }]],
+        columnInfo: [{ columnName: "columnName" }],
+      })
+    );
 
     spyOn(azdata.connection, "getUriForConnection").and.returnValue(
       connectionUri
@@ -19,18 +25,13 @@ describe("baseRepository", () => {
 
     spyOn(azdata.dataprotocol, "getProvider").and.returnValue({
       changeDatabase: changeDatabase,
-      runQueryAndReturn: jest.fn((connectionUri, query) =>
-        Promise.resolve({
-          rows: [[{ displayValue: "displayValue" }]],
-          columnInfo: [{ columnName: "columnName" }],
-        })
-      ),
+      runQueryAndReturn: runQueryAndReturnSpy,
     });
     // Act
     await runQuery(provider, connectionId, database, query);
 
     // Assert
     expect(changeDatabase).toHaveBeenCalledWith(connectionUri, database);
-    // expect(runQueryAndReturnSpy).toHaveBeenCalledWith(connectionUri, query);
+    expect(runQueryAndReturnSpy).toHaveBeenCalledWith(connectionUri, query);
   });
 });
