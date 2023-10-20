@@ -17,15 +17,11 @@ describe("messageHandler", () => {
     postMessage: jest.fn(),
   } as unknown as DashboardWebview;
   let getMssqlDbSchemaSpy;
-  // let showStatusSpy;
-  // let showResultSpy;
   let showErrorSpy;
   let exportSpy;
 
   beforeEach(() => {
     getMssqlDbSchemaSpy = spyOn(repository, "getMssqlDbSchema");
-    // showStatusSpy = spyOn(messageFunction, "showStatus");
-    // showResultSpy = spyOn(messageFunction, "showResult");
     showErrorSpy = spyOn(messageFunction, "showError");
     exportSpy = spyOn(exporter, "exportService");
   });
