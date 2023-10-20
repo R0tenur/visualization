@@ -5,7 +5,7 @@ import { AlertService } from './alert.service';
 
 import { DataStudioService } from './data-studio.service';
 import { WINDOW } from './window.token';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MERMAID } from './mermaid.token';
 import { Exportable } from '../models/exportable.model';
 

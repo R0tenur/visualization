@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
 })
 export class FakeDbService {
   private readonly header = 'classDiagram';
-  constructor() {}
 
   public createDiagram(numberOfTables: number): string {
     const tables: string[] = [];

@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { take } from 'rxjs/operators';
 import { Status } from '../../../../shared/models/status.enum';
 import { ChartError } from '../models/error.model';
@@ -17,13 +17,13 @@ describe('AlertService', () => {
     expect(alertService).toBeTruthy();
   });
   describe('showError', () => {
-    it('should trigger alert', done => {
+    it('should trigger alert', (done) => {
       // Arrange
       const chartError = createChartError();
 
       // Act
       alertService.showError(chartError);
-      alertService.Alert$.pipe(take(1)).subscribe(alert => {
+      alertService.Alert$.pipe(take(1)).subscribe((alert) => {
         // Assert
         expect(alert).toBe(chartError);
         done();
@@ -38,7 +38,7 @@ describe('AlertService', () => {
       // Act
       alertService.showError(chartError);
       alertService.dismissError();
-      alertService.Alert$.pipe(take(1)).subscribe(alert => {
+      alertService.Alert$.pipe(take(1)).subscribe((alert) => {
         // Assert
         expect(alert).toBeUndefined();
         done();

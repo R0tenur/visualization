@@ -6,15 +6,12 @@ import { Exportable } from './models/exportable.model';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
   public get Database$(): Observable<Exportable> {
     return this.dataStudioService.Database$;
   }
-  constructor(
-    public readonly dataStudioService: DataStudioService) { }
+  constructor(public readonly dataStudioService: DataStudioService) {}
 
   public exportSvg(svg: string, markdown: string): void {
     this.dataStudioService.saveCommand({ chart: svg, mermaid: markdown });

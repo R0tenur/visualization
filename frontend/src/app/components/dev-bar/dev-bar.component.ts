@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Status } from '../../../../../shared/models/status.enum';
 import { DataStudioService } from '../../services/data-studio.service';
 import { FakeDbService } from '../../services/fake-db.service';
@@ -7,7 +7,6 @@ import { FakeDbService } from '../../services/fake-db.service';
 @Component({
   selector: 'app-dev-bar',
   templateUrl: './dev-bar.component.html',
-  styleUrls: ['./dev-bar.component.scss'],
 })
 export class DevBarComponent {
   public numberOfTables = 10;
