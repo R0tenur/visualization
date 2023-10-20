@@ -28,7 +28,6 @@
                 "isDefault": true
             },
             "dependsOn": [
-                "Frontend Build",
             ]
         }
     ]

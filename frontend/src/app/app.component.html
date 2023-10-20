@@ -3,8 +3,19 @@
 <app-dev-bar></app-dev-bar>
 
 <div *ngIf="Database$ | async as database">
-  <app-button (clicked)="exportSvg(database.svg, database.mermaid)">Export</app-button>
+  <app-button (clicked)="exportSvg(database.svg, database.mermaid)"
+    >Export</app-button
+  >
+  <app-button (clicked)="toggleViews()"
+    ><span *ngIf="!options.showViews">Show views</span
+    ><span *ngIf="options.showViews">Hide views</span></app-button
+  >
 
-  <h1 *ngIf="dataStudioService.DatabaseName$ | async as databaseName">{{databaseName}}</h1>
+  <h1
+    id="dbName"
+    *ngIf="dataStudioService.DatabaseName$ | async as databaseName"
+  >
+    {{ databaseName }}
+  </h1>
   <app-mermaid-viewer [svg]="database.svg"></app-mermaid-viewer>
 </div>

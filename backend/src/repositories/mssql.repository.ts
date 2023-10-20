@@ -4,30 +4,41 @@ import * as base from "./base.repository";
 import { Provider } from "../models/provider.enum";
 import { DbResponse, DbViewResponse } from "../models/db-response.model";
 import { DatabaseColumn } from "../models/database-column.model";
-import { table } from "console";
+
+export interface ViewOptions {
+  showTables: boolean;
+  showViews: boolean;
+}
 
 export const getMssqlDbSchema = async (
   connectionId: string,
-  databaseName: string
+  databaseName: string,
+  options: ViewOptions
 ): Promise<Database> => {
   let db: Database = {
     tables: [],
     errors: [],
   } as Database;
 
-  let dbEntry = await base.runQuery<DbResponse>(
-    Provider.MSSQL,
-    connectionId,
-    databaseName,
-    informationsSchemaQuery
-  );
+  let dbEntry = options.showTables
+    ? await base.runQuery<DbResponse>(
+        Provider.MSSQL,
+        connectionId,
+        databaseName,
+        informationsSchemaQuery
+      )
+    : [];
+
   db.tables = toTables(dbEntry);
-  let dbViewEntry = await base.runQuery<DbViewResponse>(
-    Provider.MSSQL,
-    connectionId,
-    databaseName,
-    viewQuery
-  );
+
+  let dbViewEntry = options.showViews
+    ? await base.runQuery<DbViewResponse>(
+        Provider.MSSQL,
+        connectionId,
+        databaseName,
+        viewQuery
+      )
+    : [];
 
   db.tables = db.tables.concat(toViews(dbViewEntry));
 
@@ -36,8 +47,8 @@ export const getMssqlDbSchema = async (
 
 const toTables = (dbResult: DbResponse[]): DatabaseTable[] => {
   const result: DatabaseTable[] = [];
-  for (let index = 0; index < dbResult.length; index++) {
-    const element = dbResult[index];
+
+  for (const element of dbResult) {
     const columnToAdd: DatabaseColumn = {
       dataType: formatDatatype(element),
       name: element.COLUMN_NAME,
@@ -83,8 +94,7 @@ const toViews = (dbResult: DbViewResponse[]): DatabaseTable[] => {
     );
 
     const relationExists = relations.find(
-      (r) =>
-        r.schema === element.TABLE_SCHEMA && table.name === element.TABLE_NAME
+      (r) => r.schema === element.TABLE_SCHEMA && r.name === element.TABLE_NAME
     );
 
     if (!relationExists) {
