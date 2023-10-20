@@ -1,4 +1,4 @@
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Status } from '../../../../../shared/models/status.enum';
@@ -15,23 +15,28 @@ describe('AlertComponent', () => {
   let alertService: AlertService;
   let dataStudioService: DataStudioService;
   const alertSubject: Subject<ChartError> = new Subject<ChartError>();
-  const markdownSubject: BehaviorSubject<string> = new BehaviorSubject<string>(undefined as any as string);
+  const markdownSubject: BehaviorSubject<string> = new BehaviorSubject<string>(
+    undefined as any as string
+  );
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AlertComponent],
       imports: [AppTestingModule],
-    })
-    .compileComponents();
+    }).compileComponents();
   });
   afterEach(() => alertSubject.next(undefined));
 
   beforeEach(() => {
     alertService = TestBed.inject(AlertService);
-    spyOnProperty(alertService, 'Alert$').and.returnValue(alertSubject.asObservable());
+    spyOnProperty(alertService, 'Alert$').and.returnValue(
+      alertSubject.asObservable()
+    );
 
     dataStudioService = TestBed.inject(DataStudioService);
-    spyOnProperty(dataStudioService, 'Markdown$').and.returnValue(markdownSubject.asObservable());
+    spyOnProperty(dataStudioService, 'Markdown$').and.returnValue(
+      markdownSubject.asObservable()
+    );
 
     fixture = TestBed.createComponent(AlertComponent);
     component = fixture.componentInstance;
@@ -60,7 +65,9 @@ describe('AlertComponent', () => {
     alertSubject.next(createChartError());
     fixture.detectChanges();
     // Assert
-    expect(fixture.debugElement.query(By.css('#textSizeExceededError'))).toBeFalsy();
+    expect(
+      fixture.debugElement.query(By.css('#textSizeExceededError'))
+    ).toBeFalsy();
   });
 
   it('should show specific message on "Maximum text size in diagram exceeded"', () => {
@@ -69,7 +76,9 @@ describe('AlertComponent', () => {
     alertSubject.next(createChartError(error));
     fixture.detectChanges();
     // Assert
-    expect(fixture.debugElement.query(By.css('#textSizeExceededError'))).toBeTruthy();
+    expect(
+      fixture.debugElement.query(By.css('#textSizeExceededError'))
+    ).toBeTruthy();
   });
 
   it('should show markdown download button for "Maximum text size in diagram exceeded" when markdown present', fakeAsync(() => {
@@ -79,10 +88,10 @@ describe('AlertComponent', () => {
     alertSubject.next(createChartError(error));
     fixture.detectChanges();
     // Assert
-    expect(fixture.debugElement.query(By.css('#textSizeExceededErrorBtn'))).toBeTruthy();
+    expect(
+      fixture.debugElement.query(By.css('#textSizeExceededErrorBtn'))
+    ).toBeTruthy();
   }));
-
-
 
   const createChartError = (errorMessage: string = 'err') => {
     const errors = [errorMessage];
