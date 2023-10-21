@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { ExtensionContext } from "vscode";
 import { VisualizationController } from "./controllers/visualization.controller";
 

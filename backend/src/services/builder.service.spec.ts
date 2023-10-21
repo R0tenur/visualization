@@ -118,7 +118,9 @@ describe("chartBuilder", () => {
       const expected = `erDiagram
       
 "${tableSchema}.${tableName}" {
-    nvarchar ${columnName} "PK, FK"
+    nvarchar ${columnName} "PK, FK${
+        element.kind === "one to one" ? ", UNIQUE" : ""
+      }"
           
 }
 "${anotherTableSchema}.${anotherTableName}" {
@@ -126,7 +128,9 @@ describe("chartBuilder", () => {
           nvarchar ${anotherColumnName} ""
           
 }
-      "${tableSchema}.${tableName}" ${element.md} "${anotherTableSchema}.${anotherTableName}": "${anotherColumnName}"
+      "${tableSchema}.${tableName}" ${
+        element.md
+      } "${anotherTableSchema}.${anotherTableName}": "${anotherColumnName}"
 `;
 
       // Act

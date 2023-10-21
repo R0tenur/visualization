@@ -8,9 +8,12 @@ import { ButtonComponent } from './components/button/button.component';
 import { MERMAID } from './services/mermaid.token';
 import { WINDOW } from './services/window.token';
 let list: (e: Event) => void;
+
+const postMessageSpy = jasmine.createSpy('psotMessageSpy');
+
 const fakeWindowProvider = {
   provide: WINDOW,
-  useFactory: () => ({
+  useValue: {
     removeEventListener: (type: string, listener: () => void) => {
       list = undefined as any as (e: Event) => void;
     },
@@ -29,7 +32,13 @@ const fakeWindowProvider = {
         },
       ],
     },
-  }),
+    acquireVsCodeApi: () => ({
+      postMessage: postMessageSpy,
+    }),
+    console: {
+      log: (message: any) => {},
+    },
+  },
 };
 
 const fakeMermaidProvider = {

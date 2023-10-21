@@ -4,7 +4,7 @@ import { AppTestingModule } from '../app-testing.module';
 import { AlertService } from './alert.service';
 
 import { DataStudioService } from './data-studio.service';
-import { WINDOW } from './window.token';
+import { WINDOW, WindowService } from './window.token';
 import { Subscription } from 'rxjs';
 import { MERMAID } from './mermaid.token';
 import { Exportable } from '../models/exportable.model';
@@ -12,13 +12,14 @@ import { Exportable } from '../models/exportable.model';
 describe('DataStudioService', () => {
   let dataStudioService: DataStudioService;
   let alert: AlertService;
-  let windowRef: Window;
+  let windowRef: WindowService;
   let mermaid: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [AppTestingModule],
     });
+
     alert = TestBed.inject(AlertService);
     windowRef = TestBed.inject(WINDOW);
     mermaid = TestBed.inject(MERMAID);
@@ -32,13 +33,7 @@ describe('DataStudioService', () => {
   describe('isInDataStudio', () => {
     it('should return false when not in data studio', () => {
       // Arrange
-      spyOn(windowRef.document, 'getElementsByTagName')
-        .withArgs('body')
-        .and.returnValue([
-          {
-            hasAttribute: (attribute: string) => false,
-          },
-        ] as any as HTMLCollectionOf<Element>);
+      fakeIsInDataStudio(false);
 
       // Act
       const isInDataStudio = dataStudioService.isInDataStudio();
@@ -49,13 +44,8 @@ describe('DataStudioService', () => {
 
     it('should return true when in data studio', () => {
       // Arrange
-      spyOn(windowRef.document, 'getElementsByTagName')
-        .withArgs('body')
-        .and.returnValue([
-          {
-            hasAttribute: (attribute: string) => true,
-          },
-        ] as any as HTMLCollectionOf<Element>);
+
+      fakeIsInDataStudio(true);
 
       // Act
       const isInDataStudio = dataStudioService.isInDataStudio();
@@ -184,6 +174,43 @@ describe('DataStudioService', () => {
     }));
   });
 
+  describe('postMessage', () => {
+    it('should trigger save command when exportSvg', () => {
+      // Arrange
+      spyOn(windowRef.console, 'log');
+      const svg = 'dummySvg';
+      const mermaid = 'dummyMermaid';
+
+      // Act
+      dataStudioService.saveCommand({ mermaid, svg });
+
+      // Assert
+      expect(windowRef.console.log).toHaveBeenCalledWith('posted', {
+        command: 'save',
+        data: { mermaid, svg },
+      });
+    });
+
+    it('should trigger load command when load', () => {
+      // Arrange
+      spyOn(windowRef.console, 'log');
+
+      const options = {
+        showViews: true,
+        showTables: true,
+      };
+
+      // Act
+      dataStudioService.loadCommand(options);
+
+      // Assert
+      expect(windowRef.console.log).toHaveBeenCalledWith('posted', {
+        command: 'load',
+        options,
+      });
+    });
+  });
+
   const createEvent = (data: any) => {
     const event = new CustomEvent('message') as any;
     event.data = data;
@@ -202,5 +229,15 @@ describe('DataStudioService', () => {
     };
 
     return fakeCallback;
+  };
+
+  const fakeIsInDataStudio = (returns: boolean) => {
+    spyOn(windowRef.document, 'getElementsByTagName')
+      .withArgs('body')
+      .and.returnValue([
+        {
+          hasAttribute: (attribute: string) => returns,
+        },
+      ] as any as HTMLCollectionOf<Element>);
   };
 });
