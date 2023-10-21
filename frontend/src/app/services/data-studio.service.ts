@@ -5,12 +5,9 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { Status } from '../../../../shared/models/status.enum';
 import { AlertService } from './alert.service';
 import { Exportable } from '../models/exportable.model';
-import { WINDOW } from './window.token';
+import { WINDOW, WindowService } from './window.token';
 import { MERMAID } from './mermaid.token';
 import { ViewOptions } from '@shared/models/options.model';
-declare const acquireVsCodeApi: () => {
-  postMessage: (message: any) => void;
-};
 
 interface AzData {
   chart: string;
@@ -48,13 +45,14 @@ export class DataStudioService {
   private readonly markdown$ = new ReplaySubject<string>();
   private readonly db$ = new ReplaySubject<Exportable>();
   private readonly vscode = this.isInDataStudio()
-    ? acquireVsCodeApi()
+    ? this.window.acquireVsCodeApi()
     : {
-        postMessage: (message: any) => console.log('posted', message),
+        postMessage: (message: any) =>
+          this.window.console.log('posted', message),
       };
   private readonly clientStatus$ = new Subject<string>();
   constructor(
-    @Inject(WINDOW) private readonly window: Window,
+    @Inject(WINDOW) private readonly window: WindowService,
     @Inject(MERMAID) private readonly mermaid: any,
     private readonly alert: AlertService
   ) {
@@ -104,19 +102,15 @@ export class DataStudioService {
 
   public saveCommand(message: any): void {
     this.vscode.postMessage({
-      ...{
-        command: 'save',
-        data: message,
-      },
+      command: 'save',
+      data: message,
     });
   }
 
   public loadCommand(options: ViewOptions): void {
     this.vscode.postMessage({
-      ...{
-        command: 'load',
-        options,
-      },
+      command: 'load',
+      options,
     });
     this.db$.next();
   }

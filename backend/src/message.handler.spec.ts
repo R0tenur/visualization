@@ -19,11 +19,18 @@ describe("messageHandler", () => {
   let getMssqlDbSchemaSpy;
   let showErrorSpy;
   let exportSpy;
+  let showResultSpy;
+  let chartBuilderSpy;
 
   beforeEach(() => {
     getMssqlDbSchemaSpy = spyOn(repository, "getMssqlDbSchema");
     showErrorSpy = spyOn(messageFunction, "showError");
     exportSpy = spyOn(exporter, "exportService");
+    showResultSpy = spyOn(messageFunction, "showResult");
+    chartBuilderSpy = spyOn(
+      require("./services/builder.service"),
+      "chartBuilder"
+    ).and.returnValue("chart");
   });
 
   describe("load", () => {
@@ -58,6 +65,8 @@ describe("messageHandler", () => {
         status: Status.BuildingChart,
         databaseRaw: [],
       });
+      expect(chartBuilderSpy).toHaveBeenCalledWith([]);
+      expect(showResultSpy).toHaveBeenCalledWith(view, "chart", { tables: [] });
     });
   });
   describe("save", () => {

@@ -1,9 +1,16 @@
 /* istanbul ignore file */
 import { InjectionToken } from '@angular/core';
 
-export const WINDOW = new InjectionToken<Window>('Window', {
+export interface WindowService extends Window {
+  console: Console;
+  acquireVsCodeApi(): {
+    postMessage: (message: any) => void;
+  };
+}
+
+export const WINDOW = new InjectionToken<WindowService>('Window', {
   providedIn: 'root',
-  factory(): Window {
-    return window;
+  factory(): WindowService {
+    return window as unknown as WindowService;
   },
 });
