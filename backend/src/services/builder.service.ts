@@ -61,7 +61,7 @@ const getRelation = (column: DatabaseColumn) => {
     return "||--|{";
   }
 
-  return "|{--||";
+  return "}|--||";
 };
 
 const formatConstraints = (element?: string[]) =>
