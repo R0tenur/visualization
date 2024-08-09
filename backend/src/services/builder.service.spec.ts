@@ -70,11 +70,11 @@ describe("chartBuilder", () => {
   });
 
   [
-    { kind: "one to many", md: "||--|{", replaceColumn: {} },
-    { kind: "zero to many", md: "|o--|{", replaceColumn: { nullable: true } },
+    { kind: "one to many", md: "}|--||", replaceColumn: {} },
+    { kind: "zero to many", md: "|}--o|", replaceColumn: { nullable: true } },
     {
       kind: "one to one",
-      md: "||--||",
+      md: "||--|{",
       replaceColumn: { constraints: ["PRIMARY KEY", "FOREIGN KEY", "UNIQUE"] },
     },
   ].forEach((element) => {
