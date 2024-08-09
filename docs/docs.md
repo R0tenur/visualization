@@ -77,7 +77,9 @@ Run `cd ../backend`.
 
 Run `npm run pack`.
 
-# Install vsix File In Azure Data Studio
+Move `schema-visualization-0.9.3.vsix` to a desired location for installation as an extension in Azure Data Studio.
+
+## Install vsix File In Azure Data Studio
 
 Install Azure Data Studio (e.g., Azure Data Studio for User version 1.49.0).
 
