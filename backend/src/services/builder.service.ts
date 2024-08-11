@@ -47,15 +47,21 @@ export const chartBuilder = (tables: DatabaseTable[]) => {
 };
 
 const getRelation = (column: DatabaseColumn) => {
+  const constraints = column.constraints;
+
+  if (column.nullable && constraints.includes("UNIQUE")) {
+    return "|o--||";
+  }
+
   if (column.nullable) {
-    return "|o--|{";
+    return "|}--o|";
   }
 
-  if (column.constraints.includes("UNIQUE")) {
-    return "||--||";
+  if (constraints.includes("UNIQUE")) {
+    return "||--|{";
   }
 
-  return "||--|{";
+  return "}|--||";
 };
 
 const formatConstraints = (element?: string[]) =>
