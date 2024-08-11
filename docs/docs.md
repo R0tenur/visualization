@@ -77,7 +77,7 @@ Run `cd ../backend`.
 
 Run `npm run pack`.
 
-Move `schema-visualization-0.9.3.vsix` to a desired location for installation as an extension in Azure Data Studio.
+Move `<ROOT OF THIS REPOSITORY>/backend/schema-visualization-<MAJOR VERSION NUMBER>.<MINOR VERSION NUMBER>.<PATCH NUMBER>.vsix` to a desired location for installation as an extension in Azure Data Studio.
 
 ## Install vsix File In Azure Data Studio
 
@@ -89,7 +89,7 @@ Open Extensions.
 
 Click the ellipsis and Install from VSIX...
 
-Install file `Generator_Of_ERDs/backend/schema-visualization-0.9.3.vsix`.
+Install the above vsix file.
 
 On the Welcome screen click "Create a connection".
 
