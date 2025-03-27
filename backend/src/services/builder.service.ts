@@ -54,7 +54,7 @@ const getRelation = (column: DatabaseColumn) => {
   }
 
   if (column.nullable) {
-    return "|}--o|";
+    return "|{--o|";
   }
 
   if (constraints.includes("UNIQUE")) {
