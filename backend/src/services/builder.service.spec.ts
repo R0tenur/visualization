@@ -71,7 +71,7 @@ describe("chartBuilder", () => {
 
   [
     { kind: "one to many", md: "}|--||", replaceColumn: {} },
-    { kind: "zero to many", md: "|}--o|", replaceColumn: { nullable: true } },
+    { kind: "zero to many", md: "|{--o|", replaceColumn: { nullable: true } },
     {
       kind: "one to one",
       md: "||--|{",
